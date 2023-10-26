@@ -1,6 +1,6 @@
 @import './normalize.scss';
-@import './varaibles.scss';
 @import './fonts.scss';
+@import './varaibles.scss';
 
 *,
 *::before,
@@ -58,22 +58,19 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background-color: var(--bg-color);
-
-  font-size: 18px;
-  color: var(--main-text-color);
   position: relative;
+
+  background-color: var(--bg-color);
+  color: var(--main-text-color);
+  font-family: var(--maint-font-family);
+  font-size: var(--main-font-size);
 }
 
 #root {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   position: relative;
-
-  background-color: var(--bg-color);
-  font-family: var(--maint-font-family);
 }
 
 .conteiner {
@@ -85,6 +82,8 @@ body {
   padding: 5px;
 }
 
-main {
-  flex: 1 1 auto;
+h1 {
+  text-align: center;
+  font-family: var(--text1-font-family);
+  text-transform: uppercase;
 }
