@@ -26,17 +26,16 @@ export type APotionsFilter =
   | 'side_effects'
   | 'time';
 
+export interface Potion {
+  id: string;
+  type: string;
+  attributes: APotions;
+  links: {
+    self: string;
+  };
+}
 export interface PotionsResponse {
-  data:
-    | {
-        id: string;
-        type: string;
-        attributes: APotions;
-        links: {
-          self: string;
-        };
-      }[]
-    | [];
+  data: Potion[] | [];
   links: Links;
   meta: Meta;
 }
