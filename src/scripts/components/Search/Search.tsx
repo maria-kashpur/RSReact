@@ -53,6 +53,7 @@ const arrowIco = (
 
 interface IProps {
   categories: string[];
+  hundleSendParams: () => void;
 }
 
 interface IState {
@@ -124,7 +125,9 @@ export default class Search extends Component<IProps, IState> {
             ))}
           </ul>
         </div>
-        <button className="search__btn">{searchBtnIco}</button>
+        <button className="search__btn" onClick={() => this.props.hundleSendParams()}>
+          {searchBtnIco}
+        </button>
       </div>
     );
   }
