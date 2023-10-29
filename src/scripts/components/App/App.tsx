@@ -1,9 +1,8 @@
 import { Component } from 'react';
 import Search from '../Search/Search';
 import Cards from '../Cards/Cards';
-// import HpApi from '../../api/HpApi';
+import HpApi from '../../api/HpApi';
 import { PotionsReqParams, PotionsResponse } from '../../api/types/potions';
-import { potions } from '../../data/potions';
 import Pagination from '../Pagination/Pagination';
 import defineNumberOfPages from '../Pagination/defineNumberOfPages';
 
@@ -20,8 +19,7 @@ const categories = [
 ];
 
 interface IState {
-  isLoaded: boolean;
-  items: PotionsResponse['data'];
+  items: PotionsResponse['data'] | null;
   pagination: {
     current: number;
     last: number;
@@ -34,15 +32,14 @@ interface IState {
 const defaultPotionParams = {
   sort: { param: 'ASC', attribute: 'name' },
   filters: undefined,
-  pagination: { limit: 4, page: 1 },
+  pagination: { limit: 30, page: 1 },
 };
+const lsPotionParams = localStorage.getItem('potionsParams');
 export default class App extends Component<unknown, IState> {
   constructor(props: unknown) {
     super(props);
-    const lsPotionParams = localStorage.getItem('potionsParams');
     this.state = {
-      isLoaded: false,
-      items: [],
+      items: null,
       pagination: {
         current: 1,
         last: 0,
@@ -74,40 +71,48 @@ export default class App extends Component<unknown, IState> {
     const newParams = { ...this.state.params };
     newParams.pagination.page = page;
     this.setState({ params: newParams });
-    localStorage.setItem('potionsParams', JSON.stringify(newParams));
   };
 
-  public hundleSendParams = (filter: PotionsReqParams['filters']) => {
-    console.log(filter);
-    const newParams = { ...this.state.params };
-    newParams.filters = filter;
-    newParams.pagination.page = 1;
-    this.setState({ params: newParams });
-    localStorage.setItem('potionsParams', JSON.stringify(newParams));
+  public handleSendParams = async (filter: PotionsReqParams['filters']) => {
+    this.setState((state) => ({
+      params: {
+        filters: filter,
+        pagination: {
+          page: 1,
+          limit: state.params.pagination.limit,
+        },
+      },
+    }));
   };
+
+  public async getData() {
+    const res = await HpApi.getPotions(this.state.params);
+    if (!res) return;
+    this.setState((state) => ({
+      items: res.data,
+      pagination: {
+        current: res.meta.pagination.current,
+        last: res.meta.pagination.last ? res.meta.pagination.last : 0,
+        next: res.meta.pagination.next ? res.meta.pagination.next : 0,
+        pages: res.meta.pagination.records
+          ? defineNumberOfPages(res.meta.pagination.records, state.params.pagination?.limit)
+          : 0,
+      },
+    }));
+  }
 
   componentDidMount(): void {
-    const getData = async () => {
-      const res = potions;
-      // const res = await HpApi.getPotions();
-      this.setState({
-        isLoaded: true,
-        items: res.data,
-        pagination: {
-          current: res.meta.pagination.current,
-          last: res.meta.pagination.last ? res.meta.pagination.last : 0,
-          next: res.meta.pagination.next ? res.meta.pagination.next : 0,
-          pages: res.meta.pagination.records
-            ? defineNumberOfPages(res.meta.pagination.records, this.state.params.pagination?.limit)
-            : 0,
-        },
-      });
-    };
-    getData();
+    this.getData();
+  }
+
+  componentDidUpdate(_prevProps: unknown, prevState: { params: PotionsReqParams }) {
+    if (prevState.params !== this.state.params) {
+      this.getData();
+      localStorage.setItem('potionsParams', JSON.stringify(this.state.params));
+    }
   }
 
   render() {
-    console.log(this.state.params);
     return (
       <div className="content conteiner">
         <div className="content__header">
@@ -115,7 +120,7 @@ export default class App extends Component<unknown, IState> {
           <Search
             categories={categories}
             params={this.state.params}
-            hundleSendParams={this.hundleSendParams.bind(this)}
+            hundleSendParams={this.handleSendParams.bind(this)}
           />
         </div>
         <div className="content__main">
@@ -124,7 +129,7 @@ export default class App extends Component<unknown, IState> {
             handlePaginationClick={this.handlePaginationClick}
             params={this.state.params.pagination}
           />
-          <Cards data={this.state.items} />
+          {this.state.items ? <Cards data={this.state.items} /> : <div>get data...</div>}
         </div>
       </div>
     );

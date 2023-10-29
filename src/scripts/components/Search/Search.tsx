@@ -79,17 +79,18 @@ export default class Search extends Component<IProps, IState> {
       openCategories: false,
     };
   }
-  private headleSearch() {
+  private heandleSearch() {
     if (this.state.searchValue === '') {
       this.props.hundleSendParams(undefined);
     } else {
       const param: PotionsReqParams['filters'] = [
         {
           attribute: this.state.currentCategory,
-          predicate: 'eq',
+          predicate: 'cont_any',
           what: this.state.searchValue,
         },
       ];
+
       this.props.hundleSendParams(param);
     }
   }
@@ -149,7 +150,7 @@ export default class Search extends Component<IProps, IState> {
             ))}
           </ul>
         </div>
-        <button className="search__btn" onClick={() => this.headleSearch()}>
+        <button className="search__btn" onClick={() => this.heandleSearch()}>
           {searchBtnIco}
         </button>
       </div>
