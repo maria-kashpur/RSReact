@@ -15,7 +15,7 @@ const categories = [
   'ingredients',
   'manufacturers',
   'name',
-  'side effects',
+  'side_effects',
   'time',
 ];
 
@@ -30,9 +30,16 @@ interface IState {
   };
   params: PotionsReqParams;
 }
+
+const defaultPotionParams = {
+  sort: { param: 'ASC', attribute: 'name' },
+  filters: undefined,
+  pagination: { limit: 4, page: 1 },
+};
 export default class App extends Component<unknown, IState> {
   constructor(props: unknown) {
     super(props);
+    const lsPotionParams = localStorage.getItem('potionsParams');
     this.state = {
       isLoaded: false,
       items: [],
@@ -42,11 +49,7 @@ export default class App extends Component<unknown, IState> {
         next: 0,
         pages: 0,
       },
-      params: {
-        sort: { param: 'ASC', attribute: 'name' },
-        filters: undefined,
-        pagination: { limit: 4, page: 1 },
-      },
+      params: lsPotionParams ? JSON.parse(lsPotionParams) : defaultPotionParams,
     };
   }
 
@@ -70,11 +73,18 @@ export default class App extends Component<unknown, IState> {
     }
     const newParams = { ...this.state.params };
     newParams.pagination.page = page;
-
     this.setState({ params: newParams });
+    localStorage.setItem('potionsParams', JSON.stringify(newParams));
   };
 
-  public hundleSendParams = () => {};
+  public hundleSendParams = (filter: PotionsReqParams['filters']) => {
+    console.log(filter);
+    const newParams = { ...this.state.params };
+    newParams.filters = filter;
+    newParams.pagination.page = 1;
+    this.setState({ params: newParams });
+    localStorage.setItem('potionsParams', JSON.stringify(newParams));
+  };
 
   componentDidMount(): void {
     const getData = async () => {
@@ -97,11 +107,16 @@ export default class App extends Component<unknown, IState> {
   }
 
   render() {
+    console.log(this.state.params);
     return (
       <div className="content conteiner">
         <div className="content__header">
           <h1 className="content__title">Potions</h1>
-          <Search categories={categories} hundleSendParams={this.hundleSendParams} />
+          <Search
+            categories={categories}
+            params={this.state.params}
+            hundleSendParams={this.hundleSendParams.bind(this)}
+          />
         </div>
         <div className="content__main">
           <Pagination

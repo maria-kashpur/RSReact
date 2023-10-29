@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import './search.scss';
+import { APotionsFilter, PotionsReqParams } from '../../api/types/potions';
 
 const resetIco = (
   <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" width={20}>
@@ -53,11 +54,12 @@ const arrowIco = (
 
 interface IProps {
   categories: string[];
-  hundleSendParams: () => void;
+  hundleSendParams: (param: PotionsReqParams['filters'] | undefined) => void;
+  params: PotionsReqParams;
 }
 
 interface IState {
-  readonly currentCategory: string;
+  readonly currentCategory: APotionsFilter;
   readonly searchValue: string | null;
   readonly openCategories: boolean;
 }
@@ -66,12 +68,30 @@ export default class Search extends Component<IProps, IState> {
   constructor(props: Readonly<IProps>) {
     super(props);
     this.state = {
-      currentCategory: 'name',
-      searchValue: localStorage.getItem('searchPotionsValue')
-        ? localStorage.getItem('searchPotionsValue')
-        : '',
+      currentCategory:
+        this.props.params.filters && this.props.params.filters.length === 1
+          ? this.props.params.filters[0].attribute
+          : 'name',
+      searchValue:
+        this.props.params.filters && this.props.params.filters.length === 1
+          ? this.props.params.filters[0].what
+          : '',
       openCategories: false,
     };
+  }
+  private headleSearch() {
+    if (this.state.searchValue === '') {
+      this.props.hundleSendParams(undefined);
+    } else {
+      const param: PotionsReqParams['filters'] = [
+        {
+          attribute: this.state.currentCategory,
+          predicate: 'eq',
+          what: this.state.searchValue,
+        },
+      ];
+      this.props.hundleSendParams(param);
+    }
   }
 
   render() {
@@ -117,15 +137,19 @@ export default class Search extends Component<IProps, IState> {
                 className="category__item"
                 onClick={(e) => {
                   if (!e.currentTarget.textContent) return;
-                  this.setState({ currentCategory: e.currentTarget.textContent });
+                  this.setState({
+                    currentCategory: e.currentTarget.textContent
+                      .split(' ')
+                      .join('_') as APotionsFilter,
+                  });
                 }}
               >
-                {el}
+                {el.split('_').join(' ')}
               </li>
             ))}
           </ul>
         </div>
-        <button className="search__btn" onClick={() => this.props.hundleSendParams()}>
+        <button className="search__btn" onClick={() => this.headleSearch()}>
           {searchBtnIco}
         </button>
       </div>
