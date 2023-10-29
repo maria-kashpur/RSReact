@@ -5,6 +5,7 @@ import HpApi from '../../api/HpApi';
 import { PotionsReqParams, PotionsResponse } from '../../api/types/potions';
 import Pagination from '../Pagination/Pagination';
 import defineNumberOfPages from '../Pagination/defineNumberOfPages';
+import BtnError from '../BtnError/BtnError';
 
 const categories = [
   'characteristics',
@@ -117,6 +118,7 @@ export default class App extends Component<unknown, IState> {
       <div className="content conteiner">
         <div className="content__header">
           <h1 className="content__title">Potions</h1>
+          <BtnError />
           <Search
             categories={categories}
             params={this.state.params}
