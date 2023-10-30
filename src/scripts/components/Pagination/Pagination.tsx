@@ -1,4 +1,3 @@
-import { Component } from 'react';
 import './paginstion.scss';
 
 const arrow = (
@@ -44,48 +43,34 @@ interface IProps {
   };
 }
 
-export default class Pagination extends Component<IProps> {
-  constructor(props: IProps) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <div className="pagination">
-        <div
-          className={`pagination__start pagination__btn ${
-            this.props.pagination.current <= 1 ? 'disabled' : ''
-          }`}
-          onClick={() => this.props.handlePaginationClick('start')}
-        >
-          {duableArrow}
-        </div>
-        <div
-          className={`pagination__prev pagination__btn ${
-            this.props.pagination.current <= 1 ? 'disabled' : ''
-          }`}
-          onClick={() => this.props.handlePaginationClick('prev')}
-        >
-          {arrow}
-        </div>
-        <div className="pagination__num pagination__btn">{this.props.params.page}</div>
-        <div
-          className={`pagination__next pagination__btn ${
-            this.props.pagination.next === 0 ? 'disabled' : ''
-          }`}
-          onClick={() => this.props.handlePaginationClick('next')}
-        >
-          {arrow}
-        </div>
-        <div
-          className={`pagination__end pagination__btn ${
-            this.props.pagination.next === 0 ? 'disabled' : ''
-          }`}
-          onClick={() => this.props.handlePaginationClick('end')}
-        >
-          {duableArrow}
-        </div>
+export default function Pagination({ pagination, params, handlePaginationClick }: IProps) {
+  return (
+    <div className="pagination">
+      <div
+        className={`pagination__start pagination__btn ${pagination.current <= 1 ? 'disabled' : ''}`}
+        onClick={() => handlePaginationClick('start')}
+      >
+        {duableArrow}
       </div>
-    );
-  }
+      <div
+        className={`pagination__prev pagination__btn ${pagination.current <= 1 ? 'disabled' : ''}`}
+        onClick={() => handlePaginationClick('prev')}
+      >
+        {arrow}
+      </div>
+      <div className="pagination__num pagination__btn">{params.page}</div>
+      <div
+        className={`pagination__next pagination__btn ${pagination.next === 0 ? 'disabled' : ''}`}
+        onClick={() => handlePaginationClick('next')}
+      >
+        {arrow}
+      </div>
+      <div
+        className={`pagination__end pagination__btn ${pagination.next === 0 ? 'disabled' : ''}`}
+        onClick={() => handlePaginationClick('end')}
+      >
+        {duableArrow}
+      </div>
+    </div>
+  );
 }
