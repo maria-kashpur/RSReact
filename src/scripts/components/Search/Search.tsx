@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import './search.scss';
 import { APotionsFilter, PotionsReqParams } from '../../api/types/potions';
 
@@ -58,102 +58,78 @@ interface IProps {
   params: PotionsReqParams;
 }
 
-interface IState {
-  readonly currentCategory: APotionsFilter;
-  readonly searchValue: string | null;
-  readonly openCategories: boolean;
-}
+export default function Search({ categories, hundleSendParams, params }: IProps) {
+  const [currentCategory, setCurrentCategory] = useState<APotionsFilter>(
+    params.filters && params.filters.length === 1 ? params.filters[0].attribute : 'name'
+  );
+  const [searchValue, setSearchValue] = useState<string | null>(
+    params.filters && params.filters.length === 1 ? params.filters[0].what : ''
+  );
+  const [openCategories, setOpenCategories] = useState<boolean>(false);
 
-export default class Search extends Component<IProps, IState> {
-  constructor(props: Readonly<IProps>) {
-    super(props);
-    this.state = {
-      currentCategory:
-        this.props.params.filters && this.props.params.filters.length === 1
-          ? this.props.params.filters[0].attribute
-          : 'name',
-      searchValue:
-        this.props.params.filters && this.props.params.filters.length === 1
-          ? this.props.params.filters[0].what
-          : '',
-      openCategories: false,
-    };
-  }
-  private heandleSearch() {
-    if (this.state.searchValue === '') {
-      this.props.hundleSendParams(undefined);
+  const heandleSearch = () => {
+    if (searchValue === '') {
+      hundleSendParams(undefined);
     } else {
       const param: PotionsReqParams['filters'] = [
         {
-          attribute: this.state.currentCategory,
+          attribute: currentCategory,
           predicate: 'cont_any',
-          what: this.state.searchValue,
+          what: searchValue,
         },
       ];
-
-      this.props.hundleSendParams(param);
+      hundleSendParams(param);
     }
-  }
+  };
 
-  render() {
-    return (
-      <div className="search">
-        <label className="search__text">
-          <input
-            type="text"
-            required
-            value={this.state.searchValue ? this.state.searchValue : ''}
-            onChange={(e) => {
-              this.setState({ searchValue: e.target.value });
-            }}
-          />
-
-          <span className="search__current_category">
-            SEARCH
-            <br />
-            {this.state.currentCategory.toUpperCase()}
-          </span>
-        </label>
-        <button
-          className={`search__reset ${this.state.searchValue === '' ? '' : 'active'}`}
-          onClick={() => {
-            this.setState({ searchValue: '' });
+  return (
+    <div className="search">
+      <label className="search__text">
+        <input
+          type="text"
+          required
+          value={searchValue ? searchValue : ''}
+          onChange={(e) => {
+            setSearchValue(e.target.value);
           }}
-        >
-          {resetIco}
-        </button>
-        <div
-          className="search__category"
-          onClick={() => this.setState({ openCategories: !this.state.openCategories })}
-        >
-          <div className="search__current_category">
-            <span className={`arrow_ico ${this.state.openCategories ? 'active' : ''}`}>
-              {arrowIco}
-            </span>
-          </div>
-          <ul className={`search__categories ${this.state.openCategories ? 'active' : ''}`}>
-            {this.props.categories.map((el, index) => (
-              <li
-                key={`category_potion__${index}`}
-                className="category__item"
-                onClick={(e) => {
-                  if (!e.currentTarget.textContent) return;
-                  this.setState({
-                    currentCategory: e.currentTarget.textContent
-                      .split(' ')
-                      .join('_') as APotionsFilter,
-                  });
-                }}
-              >
-                {el.split('_').join(' ')}
-              </li>
-            ))}
-          </ul>
+        />
+
+        <span className="search__current_category">
+          SEARCH
+          <br />
+          {currentCategory.toUpperCase()}
+        </span>
+      </label>
+      <button
+        className={`search__reset ${searchValue === '' ? '' : 'active'}`}
+        onClick={() => setSearchValue('')}
+      >
+        {resetIco}
+      </button>
+      <div className="search__category" onClick={() => setOpenCategories(!openCategories)}>
+        <div className="search__current_category">
+          <span className={`arrow_ico ${openCategories ? 'active' : ''}`}>{arrowIco}</span>
         </div>
-        <button className="search__btn" onClick={() => this.heandleSearch()}>
-          {searchBtnIco}
-        </button>
+        <ul className={`search__categories ${openCategories ? 'active' : ''}`}>
+          {categories.map((el, index) => (
+            <li
+              key={`category_potion__${index}`}
+              className="category__item"
+              onClick={(e) => {
+                if (!e.currentTarget.textContent) return;
+                setCurrentCategory(
+                  e.currentTarget.textContent.split(' ').join('_') as APotionsFilter
+                );
+              }}
+            >
+              {el.split('_').join(' ')}
+            </li>
+          ))}
+        </ul>
       </div>
-    );
-  }
+      <button className="search__btn" onClick={() => heandleSearch()}>
+        {searchBtnIco}
+      </button>
+    </div>
+  );
 }
