@@ -6,6 +6,7 @@ import { PotionsReqParams, PotionsResponse } from '../../api/types/potions';
 import Pagination from '../Pagination/Pagination';
 import defineNumberOfPages from '../Pagination/defineNumberOfPages';
 import BtnError from '../BtnError/BtnError';
+import Loader from '../Preloader/Preloader';
 
 const categories = [
   'characteristics',
@@ -20,6 +21,7 @@ const categories = [
 ];
 
 interface IState {
+  isLoaded: boolean;
   items: PotionsResponse['data'] | null;
   pagination: {
     current: number;
@@ -40,6 +42,7 @@ export default class App extends Component<unknown, IState> {
   constructor(props: unknown) {
     super(props);
     this.state = {
+      isLoaded: false,
       items: null,
       pagination: {
         current: 1,
@@ -87,6 +90,7 @@ export default class App extends Component<unknown, IState> {
   };
 
   public async getData() {
+    this.setState({ isLoaded: false });
     const res = await HpApi.getPotions(this.state.params);
     if (!res) return;
     this.setState((state) => ({
@@ -100,6 +104,7 @@ export default class App extends Component<unknown, IState> {
           : 0,
       },
     }));
+    this.setState({ isLoaded: true });
   }
 
   componentDidMount(): void {
@@ -114,7 +119,7 @@ export default class App extends Component<unknown, IState> {
   }
 
   render() {
-    return (
+    const template = (
       <div className="content conteiner">
         <div className="content__header">
           <h1 className="content__title">Potions</h1>
@@ -134,6 +139,13 @@ export default class App extends Component<unknown, IState> {
           {this.state.items ? <Cards data={this.state.items} /> : <div>get data...</div>}
         </div>
       </div>
+    );
+
+    return (
+      <>
+        {this.state.isLoaded ? '' : <Loader />}
+        {template}
+      </>
     );
   }
 }
