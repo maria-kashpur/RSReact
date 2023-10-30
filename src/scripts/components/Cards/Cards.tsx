@@ -18,7 +18,7 @@ export default class Cards extends Component<IProps, IState> {
       <div className="cards">
         {this.props.data.map((el, index) => (
           <div className="cards_item" key={`card_${index}`}>
-            <CardPotion card={el} />
+            <CardPotion cardData={el} />
           </div>
         ))}
       </div>
