@@ -1,22 +1,15 @@
+import { useState } from 'react';
 import './btn_erroe.scss';
-import { Component } from 'react';
 
-export default class BtnError extends Component<unknown, { hasError: boolean }> {
-  constructor(props: unknown) {
-    super(props);
-    this.state = {
-      hasError: false,
-    };
-  }
+export default function BtnError() {
+  const [hasError, setHasError] = useState(false);
+  if (hasError) throw Error('button Error');
 
-  render() {
-    if (this.state.hasError) throw Error('button Error');
-    return (
-      <div className="error_btn_box">
-        <button className="btn-error" onClick={() => this.setState({ hasError: true })}>
-          <img src="dementor_png_by_shutupdemi_d6w1fnh-pre.png" alt="dementor" />
-        </button>
-      </div>
-    );
-  }
+  return (
+    <div className="error_btn_box">
+      <button className="btn-error" onClick={() => setHasError(true)}>
+        <img src="dementor_png_by_shutupdemi_d6w1fnh-pre.png" alt="dementor" />
+      </button>
+    </div>
+  );
 }
