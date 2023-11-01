@@ -20,3 +20,12 @@
     border: 1px solid #dea64d;
   }
 }
+
+.cards.mini {
+  flex-wrap: nowrap;
+  flex-direction: column;
+  .cards_item {
+    width: 270px;
+    height: auto;
+  }
+}

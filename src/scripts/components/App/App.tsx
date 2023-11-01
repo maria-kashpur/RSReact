@@ -1,12 +1,16 @@
 import { useEffect, useState } from 'react';
 import Search from '../Search/Search';
 import Cards from '../Cards/Cards';
-import HpApi from '../../api/HpApi';
+// import HpApi from '../../api/HpApi';
 import { PotionsReqParams, PotionsResponse } from '../../api/types/potions';
 import Pagination from '../Pagination/Pagination';
 import defineNumberOfPages from '../Pagination/defineNumberOfPages';
 import BtnError from '../BtnError/BtnError';
 import Loader from '../Preloader/Preloader';
+// import CardDetail from '../CardDetail/CardDetail';
+import './app.scss';
+import { potions } from '../data/potions';
+import InputNumber from '../InputNumber/InputNumber';
 
 const categories = [
   'characteristics',
@@ -25,6 +29,7 @@ const defaultPotionParams = {
   filters: undefined,
   pagination: { limit: 30, page: 1 },
 };
+
 const lsPotionParams = localStorage.getItem('potionsParams');
 
 export default function App() {
@@ -44,11 +49,13 @@ export default function App() {
     next: 0,
     pages: 0,
   });
+  //const [openCardDetal, setOpenCardDetal] = useState<boolean>(true);
 
   useEffect(() => {
     const getData = async () => {
       setIsLoaded(false);
-      const res = await HpApi.getPotions(params);
+      // const res = await HpApi.getPotions(params);
+      const res = potions;
       if (!res) return;
       setItems(res.data);
       setPagination({
@@ -65,8 +72,6 @@ export default function App() {
   }, [params]);
 
   const saveParamsInLS = (params: string) => {
-    console.log('save');
-    console.log(params);
     localStorage.setItem('potionsParams', params);
   };
 
@@ -107,6 +112,13 @@ export default function App() {
     saveParamsInLS(JSON.stringify(newParams));
   };
 
+  const handleChangePagitionLimit = (value: number) => {
+    const newParams = { ...params };
+    newParams.pagination.limit = value;
+    setParams(() => newParams);
+    saveParamsInLS(JSON.stringify(newParams));
+  };
+
   const template = (
     <div className="content conteiner">
       <div className="content__header">
@@ -114,13 +126,23 @@ export default function App() {
         <BtnError />
         <Search categories={categories} params={params} hundleSendParams={handleSendParams} />
       </div>
-      <div className="content__main">
-        <Pagination
-          pagination={pagination}
-          handlePaginationClick={handlePaginationClick}
-          params={params.pagination}
-        />
-        {items ? <Cards data={items} /> : <div>get data...</div>}
+      <div className="content__main_wrap">
+        <div className="content__main">
+          <InputNumber
+            value={params.pagination.limit}
+            minValue={1}
+            title={'Cards limit on the page:'}
+            maxValue={100}
+            action={handleChangePagitionLimit}
+          />
+          <Pagination
+            pagination={pagination}
+            handlePaginationClick={handlePaginationClick}
+            params={params.pagination}
+          />
+          {items ? <Cards data={items} variant={'full'} /> : <div>get data...</div>}
+        </div>
+        {/* <CardDetail /> */}
       </div>
     </div>
   );

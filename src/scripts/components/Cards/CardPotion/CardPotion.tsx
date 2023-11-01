@@ -2,11 +2,12 @@ import { Potion } from '../../../api/types/potions';
 import './cardPotion.scss';
 interface IProps {
   cardData: Potion;
+  variant: 'full' | 'mini';
 }
 
-export default function CardPotion({ cardData }: IProps) {
+export default function CardPotion({ cardData, variant }: IProps) {
   return (
-    <div className="potion_card">
+    <div className={`potion_card ${variant === 'mini' ? 'mini' : ''}`}>
       <div className="potion_card__ico">
         <img
           src={
