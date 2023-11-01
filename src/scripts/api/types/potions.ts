@@ -40,6 +40,17 @@ export interface PotionsResponse {
   meta: Meta;
 }
 
+export interface PotionResponse {
+  data: Potion;
+  links: {
+    self: string;
+  };
+  meta: {
+    copyright: string;
+    generated_at: string;
+  };
+}
+
 export interface PotionsReqParams {
   sort?: {
     param: 'ASC' | 'DESC';

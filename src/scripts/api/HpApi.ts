@@ -4,7 +4,7 @@ import { ChaptersReqParams } from './types/chapters';
 import { CharacterReqParams } from './types/characters';
 import { Predicate } from './types/general';
 import { MoviesReqParams } from './types/movies';
-import { PotionsReqParams } from './types/potions';
+import { PotionResponse, PotionsReqParams } from './types/potions';
 import { SpellsReqParams } from './types/spells';
 
 export default class HpApi {
@@ -36,11 +36,11 @@ export default class HpApi {
     },
     potions: {
       getList: () => `${this.root.potions}`,
-      getForID: (potionID: string | number) => `${this.root.movies}/${potionID}`,
+      getForID: (potionID: string | number) => `${this.root.potions}/${potionID}`,
     },
     spells: {
       getList: () => `${this.root.spells}`,
-      getForID: (spellID: string | number) => `${this.root.movies}/${spellID}`,
+      getForID: (spellID: string | number) => `${this.root.spells}/${spellID}`,
     },
   };
 
@@ -153,12 +153,12 @@ export default class HpApi {
     const paramsArr = params ? this.getArrParams(params) : [];
 
     const url = paramsArr.length > 0 ? this.generateUrlWithParams(endpoint, paramsArr) : endpoint;
-    console.log(url);
+    //console.log(url);
     const res = await load(url);
     return res;
   }
 
-  static async getPotion(id: string) {
+  static async getPotion(id: string): Promise<PotionResponse> {
     const url = this.endpoints.potions.getForID(id);
     console.log(url);
     const res = await load(url);

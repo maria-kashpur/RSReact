@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react';
 import Search from '../Search/Search';
 import Cards from '../Cards/Cards';
-// import HpApi from '../../api/HpApi';
+import HpApi from '../../api/HpApi';
 import { PotionsReqParams, PotionsResponse } from '../../api/types/potions';
 import Pagination from '../Pagination/Pagination';
 import defineNumberOfPages from '../Pagination/defineNumberOfPages';
 import BtnError from '../BtnError/BtnError';
 import Loader from '../Preloader/Preloader';
-// import CardDetail from '../CardDetail/CardDetail';
 import './app.scss';
-import { potions } from '../data/potions';
+// import { potions } from '../data/potions';
 import InputNumber from '../InputNumber/InputNumber';
+import { Outlet } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
 
 const categories = [
   'characteristics',
@@ -24,19 +25,26 @@ const categories = [
   'time',
 ];
 
-const defaultPotionParams = {
-  sort: { param: 'ASC', attribute: 'name' },
-  filters: undefined,
-  pagination: { limit: 30, page: 1 },
-};
-
 const lsPotionParams = localStorage.getItem('potionsParams');
 
 export default function App() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const limit = searchParams.get('limit');
+  const page = searchParams.get('page');
+
+  const defaultPotionParams = {
+    sort: { param: 'ASC', attribute: 'name' },
+    filters: undefined,
+    pagination: {
+      limit: limit !== null && typeof +limit === 'number' ? +limit : 30,
+      page: page !== null && typeof +page === 'number' ? +page : 1,
+    },
+  };
+
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [items, setItems] = useState<PotionsResponse['data'] | null>(null);
   const [params, setParams] = useState<PotionsReqParams>(
-    lsPotionParams ? JSON.parse(lsPotionParams) : defaultPotionParams
+    lsPotionParams && searchParams.size === 0 ? JSON.parse(lsPotionParams) : defaultPotionParams
   );
   const [pagination, setPagination] = useState<{
     current: number;
@@ -49,13 +57,13 @@ export default function App() {
     next: 0,
     pages: 0,
   });
-  //const [openCardDetal, setOpenCardDetal] = useState<boolean>(true);
 
   useEffect(() => {
     const getData = async () => {
       setIsLoaded(false);
-      // const res = await HpApi.getPotions(params);
-      const res = potions;
+
+      const res = await HpApi.getPotions(params);
+      //const res = potions;
       if (!res) return;
       setItems(res.data);
       setPagination({
@@ -66,10 +74,11 @@ export default function App() {
           ? defineNumberOfPages(res.meta.pagination.records, params.pagination?.limit)
           : 0,
       });
+      setSearchParams({ page: `${params.pagination.page}`, limit: `${params.pagination.limit}` });
       setIsLoaded(true);
     };
     getData();
-  }, [params]);
+  }, [params, setSearchParams]);
 
   const saveParamsInLS = (params: string) => {
     localStorage.setItem('potionsParams', params);
@@ -115,6 +124,7 @@ export default function App() {
   const handleChangePagitionLimit = (value: number) => {
     const newParams = { ...params };
     newParams.pagination.limit = value;
+    newParams.pagination.page = 1;
     setParams(() => newParams);
     saveParamsInLS(JSON.stringify(newParams));
   };
@@ -135,14 +145,18 @@ export default function App() {
             maxValue={100}
             action={handleChangePagitionLimit}
           />
-          <Pagination
-            pagination={pagination}
-            handlePaginationClick={handlePaginationClick}
-            params={params.pagination}
-          />
+          {isLoaded && items?.length !== 0 ? (
+            <Pagination
+              pagination={pagination}
+              handlePaginationClick={handlePaginationClick}
+              params={params.pagination}
+            />
+          ) : (
+            ''
+          )}
           {items ? <Cards data={items} variant={'full'} /> : <div>get data...</div>}
         </div>
-        {/* <CardDetail /> */}
+        <Outlet />
       </div>
     </div>
   );
