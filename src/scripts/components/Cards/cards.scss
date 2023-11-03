@@ -1,0 +1,32 @@
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  gap: 30px;
+}
+
+.cards_item {
+  width: 270px;
+  height: 300px;
+  border: 1px solid #d6ba8e;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  gap: 10px;
+  &:hover,
+  &.active {
+    box-shadow: 12px 12px 2px 1px #d6ba8e3e;
+    border: 1px solid #dea64d;
+  }
+}
+
+.cards.mini {
+  flex-wrap: nowrap;
+  flex-direction: column;
+  .cards_item {
+    width: 270px;
+    height: auto;
+  }
+}

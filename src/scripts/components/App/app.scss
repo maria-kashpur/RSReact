@@ -1,0 +1,21 @@
+.content__main_wrap {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: nowrap;
+  gap: 30px;
+  align-items: flex-start;
+}
+
+.content__main {
+  &.blur {
+    filter: blur(1px);
+    & > * {
+      pointer-events: none;
+    }
+  }
+}
+
+.messege {
+  margin: 20px auto;
+  text-align: center;
+}

@@ -1,0 +1,89 @@
+@import './normalize.scss';
+@import './fonts.scss';
+@import './varaibles.scss';
+
+*,
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+:focus,
+:active {
+  outline: none;
+}
+
+a,
+a:visited,
+a:hover {
+  text-decoration: inherit;
+  color: inherit;
+}
+
+a:hover {
+  color: var(--a-hover-default-color);
+}
+
+input,
+button,
+textarea {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+ul,
+li {
+  list-style: none;
+}
+
+img {
+  vertical-align: top;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+html,
+body {
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+
+  background-color: var(--bg-color);
+  color: var(--main-text-color);
+  font-family: var(--maint-font-family);
+  font-size: var(--main-font-size);
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.conteiner {
+  max-width: var(--max-content-width);
+  padding: var(--max-content-padding);
+  margin: 0px auto;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 5px;
+}
+
+h1 {
+  text-align: center;
+  font-family: var(--text1-font-family);
+  text-transform: uppercase;
+}
