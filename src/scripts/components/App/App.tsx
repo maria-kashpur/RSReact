@@ -1,90 +1,52 @@
 import { useEffect, useState } from 'react';
 import Search from '../Search/Search';
 import Cards from '../Cards/Cards';
-import HpApi from '../../api/HpApi';
 import { PotionsReqParams, PotionsResponse } from '../../api/types/potions';
 import Pagination from '../Pagination/Pagination';
-import defineNumberOfPages from '../Pagination/defineNumberOfPages';
 import BtnError from '../BtnError/BtnError';
 import Loader from '../Preloader/Preloader';
 import './app.scss';
 // import { potions } from '../data/potions';
 import InputNumber from '../InputNumber/InputNumber';
-import { Outlet } from 'react-router';
+import { Outlet, useLocation, useNavigate } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
+import { loader } from './loader';
+import { lsPotionParams, saveParamsInLS } from './data/localStorage';
+import { categories } from './data/searchCategories';
+import { getDefaultPotionParams } from './data/getDefaultPotionParams';
 
-const categories = [
-  'characteristics',
-  'difficulty',
-  'effect',
-  'inventors',
-  'ingredients',
-  'manufacturers',
-  'name',
-  'side_effects',
-  'time',
-];
-
-const lsPotionParams = localStorage.getItem('potionsParams');
+interface IPagination {
+  current: number;
+  last: number;
+  next: number;
+  pages: number;
+}
 
 export default function App() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const limit = searchParams.get('limit');
-  const page = searchParams.get('page');
-
-  const defaultPotionParams = {
-    sort: { param: 'ASC', attribute: 'name' },
-    filters: undefined,
-    pagination: {
-      limit: limit !== null && typeof +limit === 'number' ? +limit : 30,
-      page: page !== null && typeof +page === 'number' ? +page : 1,
-    },
-  };
-
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [items, setItems] = useState<PotionsResponse['data'] | null>(null);
   const [params, setParams] = useState<PotionsReqParams>(
-    lsPotionParams && searchParams.size === 0 ? JSON.parse(lsPotionParams) : defaultPotionParams
+    lsPotionParams && searchParams.size === 0
+      ? JSON.parse(lsPotionParams)
+      : getDefaultPotionParams(searchParams.get('limit'), searchParams.get('page'))
   );
-  const [pagination, setPagination] = useState<{
-    current: number;
-    last: number;
-    next: number;
-    pages: number;
-  }>({
-    current: 1,
-    last: 0,
-    next: 0,
-    pages: 0,
-  });
+  const [pagination, setPagination] = useState<IPagination | null>(null);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const getData = async () => {
-      setIsLoaded(false);
-
-      const res = await HpApi.getPotions(params);
-      //const res = potions;
-      if (!res) return;
-      setItems(res.data);
-      setPagination({
-        current: res.meta.pagination.current,
-        last: res.meta.pagination.last ? res.meta.pagination.last : 0,
-        next: res.meta.pagination.next ? res.meta.pagination.next : 0,
-        pages: res.meta.pagination.records
-          ? defineNumberOfPages(res.meta.pagination.records, params.pagination?.limit)
-          : 0,
-      });
+    setIsLoaded(() => false);
+    loader(params).then(({ items, pagination }) => {
+      setItems(() => items);
+      setPagination(() => pagination);
       setSearchParams({ page: `${params.pagination.page}`, limit: `${params.pagination.limit}` });
-      setIsLoaded(true);
-    };
-    getData();
+      setIsLoaded(() => true);
+    });
   }, [params, setSearchParams]);
 
-  const saveParamsInLS = (params: string) => {
-    localStorage.setItem('potionsParams', params);
-  };
-
   const handlePaginationClick = (btn: 'start' | 'next' | 'prev' | 'end') => {
+    if (!pagination) return;
     let page = params.pagination.page;
     switch (btn) {
       case 'start':
@@ -119,6 +81,9 @@ export default function App() {
     };
     setParams(newParams);
     saveParamsInLS(JSON.stringify(newParams));
+    if (location.pathname !== '/') {
+      navigate('/');
+    }
   };
 
   const handleChangePagitionLimit = (value: number) => {
@@ -137,7 +102,15 @@ export default function App() {
         <Search categories={categories} params={params} hundleSendParams={handleSendParams} />
       </div>
       <div className="content__main_wrap">
-        <div className="content__main">
+        <div
+          className={`content__main ${location.pathname !== '/' ? 'blur' : ''}`}
+          onClick={(e) => {
+            if (location.pathname !== '/') {
+              e.stopPropagation();
+              navigate('/');
+            }
+          }}
+        >
           <InputNumber
             value={params.pagination.limit}
             minValue={1}
@@ -145,7 +118,7 @@ export default function App() {
             maxValue={100}
             action={handleChangePagitionLimit}
           />
-          {isLoaded && items?.length !== 0 ? (
+          {isLoaded && pagination && items && items.length > 0 ? (
             <Pagination
               pagination={pagination}
               handlePaginationClick={handlePaginationClick}
@@ -154,7 +127,16 @@ export default function App() {
           ) : (
             ''
           )}
-          {items ? <Cards data={items} variant={'full'} /> : <div>get data...</div>}
+          {isLoaded && items ? (
+            <Cards data={items} variant={location.pathname === '/' ? 'full' : 'mini'} />
+          ) : (
+            ''
+          )}
+          {items && items.length === 0 ? (
+            <p className="messege"> No results were found for your request</p>
+          ) : (
+            ''
+          )}
         </div>
         <Outlet />
       </div>

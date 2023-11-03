@@ -4,7 +4,7 @@ import { ChaptersReqParams } from './types/chapters';
 import { CharacterReqParams } from './types/characters';
 import { Predicate } from './types/general';
 import { MoviesReqParams } from './types/movies';
-import { PotionResponse, PotionsReqParams } from './types/potions';
+import { PotionResponse, PotionsReqParams, PotionsResponse } from './types/potions';
 import { SpellsReqParams } from './types/spells';
 
 export default class HpApi {
@@ -148,7 +148,7 @@ export default class HpApi {
     return res;
   }
 
-  static async getPotions(params?: PotionsReqParams) {
+  static async getPotions(params?: PotionsReqParams): Promise<PotionsResponse> {
     const endpoint = this.endpoints.potions.getList();
     const paramsArr = params ? this.getArrParams(params) : [];
 

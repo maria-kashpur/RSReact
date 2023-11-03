@@ -15,7 +15,8 @@
   flex-direction: column;
   overflow: hidden;
   gap: 10px;
-  &:hover {
+  &:hover,
+  &.active {
     box-shadow: 12px 12px 2px 1px #d6ba8e3e;
     border: 1px solid #dea64d;
   }

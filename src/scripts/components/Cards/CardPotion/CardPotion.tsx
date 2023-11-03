@@ -4,17 +4,13 @@ interface IProps {
   cardData: Potion;
   variant: 'full' | 'mini';
 }
+import defoultCardIco from '../../../../assets/images/3808217_cauldron_halloween_pot_potion_witch_icon (1).svg';
 
 export default function CardPotion({ cardData, variant }: IProps) {
   return (
     <div className={`potion_card ${variant === 'mini' ? 'mini' : ''}`}>
       <div className="potion_card__ico">
-        <img
-          src={
-            cardData.attributes.image || '3808217_cauldron_halloween_pot_potion_witch_icon (1).svg'
-          }
-          alt="potion"
-        />
+        <img src={cardData.attributes.image || defoultCardIco} alt="potion" />
       </div>
       <div className="potion_card__description">
         <h3>{cardData.attributes.name}</h3>

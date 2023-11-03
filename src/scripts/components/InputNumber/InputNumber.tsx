@@ -46,9 +46,9 @@ export default function InputNumber({ value, minValue, maxValue, title, action }
           type="number"
           min={minValue}
           max={maxValue}
+          readOnly={true}
           value={currentValue}
           onChange={(e) => {
-            console.log(e);
             hundleClick(+e.target.value);
           }}
         />

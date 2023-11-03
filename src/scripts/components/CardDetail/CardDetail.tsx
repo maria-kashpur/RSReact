@@ -3,6 +3,7 @@ import s from './card_detail.module.scss';
 import { useEffect, useState } from 'react';
 import HpApi from '../../api/HpApi';
 import { PotionResponse } from '../../api/types/potions';
+import defoultIco from '../../../assets/images/3808217_cauldron_halloween_pot_potion_witch_icon (1).svg';
 
 function createAttributes(card: PotionResponse['data'] | null) {
   if (!card) return {};
@@ -59,38 +60,37 @@ export default function CardDetail() {
       setCard(() => res.data);
       setIsLoaded(() => true);
     };
-    setIsLoaded(() => false);
     getData();
+    return () => {
+      setCard(null);
+    };
   }, [id]);
 
-  const template = (
+  return (
     <div className={`${s.box}`}>
       <Link to={'/'} className={s.close_btn}>
         {closeIco}
       </Link>
-      <div className={s.content}>
-        <div className={s.content__img}>
-          <img
-            src={`${
-              card?.attributes.image || '3808217_cauldron_halloween_pot_potion_witch_icon (1).svg'
-            }`}
-            alt="image"
-          />
-        </div>
-        <div className={s.content__text}>
-          <h2 className={s.content_text__title}>{card?.attributes.name}</h2>
-          <div className={s.detail}>
-            {Object.entries(createAttributes(card)).map(([title, content]) => (
-              <div key={title} className={`${s.item}`}>
-                <div className={s.item__title}>{title}:</div>
-                <div className={s.item__content}>{content}</div>
-              </div>
-            ))}
+      {isLoaded ? (
+        <div className={s.content}>
+          <div className={s.content__img}>
+            <img src={`${card?.attributes.image || defoultIco}`} alt="image" />
+          </div>
+          <div className={s.content__text}>
+            <h2 className={s.content_text__title}>{card?.attributes.name}</h2>
+            <div className={s.detail}>
+              {Object.entries(createAttributes(card)).map(([title, content]) => (
+                <div key={title} className={`${s.item}`}>
+                  <div className={s.item__title}>{title}:</div>
+                  <div className={s.item__content}>{content}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      ) : (
+        ''
+      )}
     </div>
   );
-
-  return isLoaded && card ? template : <p>loading...</p>;
 }
