@@ -14,6 +14,7 @@ import { loader } from './loader';
 import { lsPotionParams, saveParamsInLS } from './data/localStorage';
 import { categories } from './data/searchCategories';
 import { getDefaultPotionParams } from './data/getDefaultPotionParams';
+import { CardsContext } from '../../contexts/CardsContext';
 
 interface IPagination {
   current: number;
@@ -25,7 +26,7 @@ interface IPagination {
 export default function App() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
-  const [items, setItems] = useState<PotionsResponse['data'] | null>(null);
+  const [items, setItems] = useState<PotionsResponse['data'] | null>([]);
   const [params, setParams] = useState<PotionsReqParams>(
     lsPotionParams && searchParams.size === 0
       ? JSON.parse(lsPotionParams)
@@ -144,9 +145,9 @@ export default function App() {
   );
 
   return (
-    <>
+    <CardsContext.Provider value={items}>
       {isLoaded ? '' : <Loader />}
       {template}
-    </>
+    </CardsContext.Provider>
   );
 }

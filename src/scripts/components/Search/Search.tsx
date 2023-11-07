@@ -2,7 +2,6 @@ import { useState } from 'react';
 import './search.scss';
 import { APotionsFilter, PotionsReqParams } from '../../api/types/potions';
 import { arrowIco, resetIco, searchBtnIco } from './ico';
-
 interface IProps {
   categories: string[];
   hundleSendParams: (param: PotionsReqParams['filters'] | undefined) => void;
