@@ -1,10 +1,4 @@
 import { render, screen } from '@testing-library/react';
-// import ErrorPage from '../../api/pages/ErrorPage/ErrorPage';
-// import CardDetail from '../CardDetail/CardDetail';
-// import App from './App';
-// import { createMemoryRouter } from 'react-router';
-// import { RouterProvider } from 'react-router-dom';
-// import { PotionsParamsProvider } from '../../providers/HPParamsProvider';
 
 import Cards from './Cards';
 import { CardsContextProvider } from '../../providers/CardsProvider';
