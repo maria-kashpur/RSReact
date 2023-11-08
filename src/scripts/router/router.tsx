@@ -1,13 +1,18 @@
 import { createBrowserRouter } from 'react-router-dom';
-import App from '../scripts/components/App/App';
-import ErrorPage from '../scripts/api/pages/ErrorPage/ErrorPage';
-import CardDetail from '../scripts/components/CardDetail/CardDetail';
+import App from '../components/App/App';
+import ErrorPage from '../api/pages/ErrorPage/ErrorPage';
+import CardDetail from '../components/CardDetail/CardDetail';
+import { PotionsParamsProvider } from '../providers/HPParamsProvider';
 
 const router = createBrowserRouter(
   [
     {
       path: '/',
-      element: <App />,
+      element: (
+        <PotionsParamsProvider>
+          <App />
+        </PotionsParamsProvider>
+      ),
       errorElement: <ErrorPage />,
       children: [
         {

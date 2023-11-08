@@ -1,16 +1,25 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import s from './input_number.module.scss';
+import { saveParamsInLS } from '../App/data/localStorage';
+import { IContext, PotionsParamsContext } from '../../providers/HPParamsProvider';
 
 interface IProps {
-  value: number;
   minValue?: number;
   maxValue?: number;
-  action?: (value: number) => void;
   title?: string;
 }
 
-export default function InputNumber({ value, minValue, maxValue, title, action }: IProps) {
-  const [currentValue, setCurrentValue] = useState(value);
+export default function InputNumber({ minValue, maxValue, title }: IProps) {
+  const { params, setParams } = useContext(PotionsParamsContext) as IContext;
+  const [currentValue, setCurrentValue] = useState(params.pagination.limit);
+
+  const handleChangePagitionLimit = (value: number) => {
+    const newParams = { ...params };
+    newParams.pagination.limit = value;
+    newParams.pagination.page = 1;
+    setParams(() => newParams);
+    saveParamsInLS(JSON.stringify(newParams));
+  };
 
   const hundleClick = (act: '+' | '-' | number) => {
     let newValue = currentValue;
@@ -28,7 +37,7 @@ export default function InputNumber({ value, minValue, maxValue, title, action }
       newValue = act;
     }
     setCurrentValue(() => newValue);
-    if (action) action(newValue);
+    handleChangePagitionLimit(newValue);
   };
 
   return (
@@ -36,7 +45,7 @@ export default function InputNumber({ value, minValue, maxValue, title, action }
       {title ? <h2 className={s.title}>{title}</h2> : ''}
       <div className={s.number}>
         <button
-          className={`${s['number-minus']} ${value === minValue ? `${s.disabled}` : ''}`}
+          className={`${s['number-minus']} ${currentValue === minValue ? `${s.disabled}` : ''}`}
           type="button"
           onClick={() => hundleClick('-')}
         >
@@ -53,7 +62,7 @@ export default function InputNumber({ value, minValue, maxValue, title, action }
           }}
         />
         <button
-          className={`${s['number-plus']} ${value === maxValue ? 'disabled' : ''}`}
+          className={`${s['number-plus']} ${currentValue === maxValue ? 'disabled' : ''}`}
           type="button"
           onClick={() => hundleClick('+')}
         >

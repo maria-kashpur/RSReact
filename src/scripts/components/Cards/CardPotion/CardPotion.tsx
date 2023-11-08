@@ -2,11 +2,13 @@ import { Potion } from '../../../api/types/potions';
 import './cardPotion.scss';
 interface IProps {
   cardData: Potion;
-  variant: 'full' | 'mini';
 }
 import defoultCardIco from '../../../../assets/images/3808217_cauldron_halloween_pot_potion_witch_icon (1).svg';
+import { useContext } from 'react';
+import { CardsContext } from '../../../providers/CardsProvider';
 
-export default function CardPotion({ cardData, variant }: IProps) {
+export default function CardPotion({ cardData }: IProps) {
+  const { variant } = useContext(CardsContext);
   return (
     <div className={`potion_card ${variant === 'mini' ? 'mini' : ''}`}>
       <div className="potion_card__ico">

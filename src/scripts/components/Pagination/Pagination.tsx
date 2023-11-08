@@ -1,4 +1,8 @@
+import { useContext } from 'react';
+import { saveParamsInLS } from '../App/data/localStorage';
 import './paginstion.scss';
+import { IPagination } from '../App/App';
+import { IContext, PotionsParamsContext } from '../../providers/HPParamsProvider';
 
 const arrow = (
   <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
@@ -30,20 +34,36 @@ const duableArrow = (
 );
 
 interface IProps {
-  pagination: {
-    current: number;
-    last: number;
-    next: number;
-    pages: number;
-  };
-  handlePaginationClick: (btn: 'start' | 'next' | 'prev' | 'end') => void;
-  params: {
-    limit: number;
-    page: number;
-  };
+  pagination: IPagination;
 }
 
-export default function Pagination({ pagination, params, handlePaginationClick }: IProps) {
+export default function Pagination({ pagination }: IProps) {
+  const { params, setParams } = useContext(PotionsParamsContext) as IContext;
+  const handlePaginationClick = (btn: 'start' | 'next' | 'prev' | 'end') => {
+    if (!pagination) return;
+    let page = params.pagination.page;
+    switch (btn) {
+      case 'start':
+        page = 1;
+        break;
+      case 'prev':
+        page = page - 1;
+        break;
+      case 'next':
+        page = page + 1;
+        break;
+      case 'end':
+        page = pagination.pages;
+        break;
+      default:
+        break;
+    }
+    const newParams = { ...params };
+    newParams.pagination.page = page;
+    setParams(newParams);
+    saveParamsInLS(JSON.stringify(newParams));
+  };
+
   return (
     <div className="pagination">
       <div
@@ -58,7 +78,7 @@ export default function Pagination({ pagination, params, handlePaginationClick }
       >
         {arrow}
       </div>
-      <div className="pagination__num pagination__btn">{params.page}</div>
+      <div className="pagination__num pagination__btn">{params.pagination.page}</div>
       <div
         className={`pagination__next pagination__btn ${pagination.next === 0 ? 'disabled' : ''}`}
         onClick={() => handlePaginationClick('next')}

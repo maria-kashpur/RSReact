@@ -1,14 +1,14 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import './search.scss';
 import { APotionsFilter, PotionsReqParams } from '../../api/types/potions';
 import { arrowIco, resetIco, searchBtnIco } from './ico';
-interface IProps {
-  categories: string[];
-  hundleSendParams: (param: PotionsReqParams['filters'] | undefined) => void;
-  params: PotionsReqParams;
-}
+import { useNavigate } from 'react-router';
+import { saveParamsInLS } from '../App/data/localStorage';
+import { IContext, PotionsParamsContext } from '../../providers/HPParamsProvider';
 
-export default function Search({ categories, hundleSendParams, params }: IProps) {
+export default function Search() {
+  const { categories, setParams, params } = useContext(PotionsParamsContext) as IContext;
+
   const [currentCategory, setCurrentCategory] = useState<APotionsFilter>(
     params.filters && params.filters.length === 1 ? params.filters[0].attribute : 'name'
   );
@@ -17,9 +17,27 @@ export default function Search({ categories, hundleSendParams, params }: IProps)
   );
   const [openCategories, setOpenCategories] = useState<boolean>(false);
 
+  const navigate = useNavigate();
+
+  const handleSendParams = async (filter: PotionsReqParams['filters']) => {
+    const newParams = {
+      ...params,
+      filters: filter,
+      pagination: {
+        page: 1,
+        limit: params.pagination.limit,
+      },
+    };
+    setParams(newParams);
+    saveParamsInLS(JSON.stringify(newParams));
+    if (location.pathname !== '/') {
+      navigate('/');
+    }
+  };
+
   const heandleSearch = () => {
     if (searchValue === '') {
-      hundleSendParams(undefined);
+      handleSendParams(undefined);
     } else {
       const param: PotionsReqParams['filters'] = [
         {
@@ -28,7 +46,7 @@ export default function Search({ categories, hundleSendParams, params }: IProps)
           what: searchValue,
         },
       ];
-      hundleSendParams(param);
+      handleSendParams(param);
     }
   };
 

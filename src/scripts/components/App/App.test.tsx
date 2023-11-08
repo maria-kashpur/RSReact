@@ -4,11 +4,16 @@ import CardDetail from '../CardDetail/CardDetail';
 import App from './App';
 import { createMemoryRouter } from 'react-router';
 import { RouterProvider } from 'react-router-dom';
+import { PotionsParamsProvider } from '../../providers/HPParamsProvider';
 
 const routes = [
   {
     path: '/RSReact',
-    element: <App />,
+    element: (
+      <PotionsParamsProvider>
+        <App />
+      </PotionsParamsProvider>
+    ),
     errorElement: <ErrorPage />,
     children: [
       {

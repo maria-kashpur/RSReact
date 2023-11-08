@@ -1,4 +1,6 @@
-export const categories = [
+import { APotionsFilter } from '../../../api/types/potions';
+
+export const categories: APotionsFilter[] = [
   'characteristics',
   'difficulty',
   'effect',

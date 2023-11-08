@@ -1,28 +1,23 @@
-import { PotionsResponse } from '../../api/types/potions';
 import './cards.scss';
 import CardPotion from './CardPotion/CardPotion';
 import { NavLink } from 'react-router-dom';
 import { useContext } from 'react';
-import { CardsContext } from '../../contexts/CardsContext';
+import { CardsContext } from '../../providers/CardsProvider';
+import { Potion } from '../../api/types/potions';
 
-interface IProps {
-  data: PotionsResponse['data'];
-  variant: 'full' | 'mini';
-}
-
-export default function Cards({ variant }: IProps) {
-  const data = useContext(CardsContext);
+export default function Cards() {
+  const { data, variant } = useContext(CardsContext);
 
   return (
-    <div className={`cards ${variant === 'mini' ? 'mini' : ''}`}>
-      {data?.map((el) => (
+    <div className={`cards ${variant}`}>
+      {data?.map((el: Potion) => (
         <NavLink
           to={`/detail/${el.id}`}
           className={`cards_item`}
           key={`${el.id}`}
           state={{ id: el.id }}
         >
-          <CardPotion cardData={el} variant={variant} />
+          <CardPotion cardData={el} />
         </NavLink>
       ))}
     </div>
