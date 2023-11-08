@@ -10,7 +10,7 @@ import { CardsContext } from '../../../providers/CardsProvider';
 export default function CardPotion({ cardData }: IProps) {
   const { variant } = useContext(CardsContext);
   return (
-    <div className={`potion_card ${variant === 'mini' ? 'mini' : ''}`}>
+    <div className={`potion_card${variant === 'mini' ? ' mini' : ''}`}>
       <div className="potion_card__ico">
         <img src={cardData.attributes.image || defoultCardIco} alt="potion" />
       </div>

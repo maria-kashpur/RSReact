@@ -3,11 +3,11 @@ import { PotionsResponse } from '../api/types/potions';
 import { useLocation } from 'react-router';
 
 interface IContext {
-  data?: PotionsResponse['data'] | null;
-  variant?: 'full' | 'mini';
+  data: PotionsResponse['data'];
+  variant: 'full' | 'mini';
 }
 
-export const CardsContext = React.createContext<IContext>({});
+export const CardsContext = React.createContext<IContext>({ data: [], variant: 'full' });
 
 export const CardsContextProvider = ({
   children,
@@ -15,7 +15,7 @@ export const CardsContextProvider = ({
   ...props
 }: {
   children: ReactNode;
-  data: PotionsResponse['data'] | null;
+  data: PotionsResponse['data'];
 }) => {
   const location = useLocation();
   const variant = location.pathname === '/' ? 'full' : 'mini';

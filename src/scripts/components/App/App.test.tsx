@@ -40,7 +40,6 @@ describe('Testing Router', () => {
       initialIndex: 0,
     });
     render(<RouterProvider router={router} />);
-    screen.debug();
     expect(screen.getByText('Potions')).toBeDefined();
   });
 });

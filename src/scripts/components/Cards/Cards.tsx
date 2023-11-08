@@ -8,18 +8,20 @@ import { Potion } from '../../api/types/potions';
 export default function Cards() {
   const { data, variant } = useContext(CardsContext);
 
-  return (
-    <div className={`cards ${variant}`}>
-      {data?.map((el: Potion) => (
-        <NavLink
-          to={`/detail/${el.id}`}
-          className={`cards_item`}
-          key={`${el.id}`}
-          state={{ id: el.id }}
-        >
-          <CardPotion cardData={el} />
-        </NavLink>
-      ))}
-    </div>
+  const cards = data?.map((el: Potion) => (
+    <NavLink
+      to={`/detail/${el.id}`}
+      className={`cards_item`}
+      key={`${el.id}`}
+      state={{ id: el.id }}
+    >
+      <CardPotion cardData={el} />
+    </NavLink>
+  ));
+
+  return data.length > 0 ? (
+    <div className={`cards ${variant === 'mini' ? 'mini' : ''}`}>{cards}</div>
+  ) : (
+    <p className="messege"> No results were found for your request</p>
   );
 }

@@ -23,7 +23,7 @@ export default function App() {
   const { params, setSearchParams } = useContext(PotionsParamsContext) as IContext;
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
-  const [items, setItems] = useState<PotionsResponse['data'] | null>([]);
+  const [items, setItems] = useState<PotionsResponse['data']>([]);
 
   const [pagination, setPagination] = useState<IPagination | null>(null);
   const location = useLocation();
@@ -62,12 +62,12 @@ export default function App() {
           ) : (
             ''
           )}
-          {isLoaded && items ? <Cards /> : ''}
-          {items && items.length === 0 ? (
+          {isLoaded ? <Cards /> : ''}
+          {/* {items && items.length === 0 ? (
             <p className="messege"> No results were found for your request</p>
           ) : (
             ''
-          )}
+          )} */}
         </div>
         <Outlet />
       </div>

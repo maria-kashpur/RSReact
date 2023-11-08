@@ -1,10 +1,10 @@
 import HpApi from '../../api/HpApi';
-import { PotionsReqParams } from '../../api/types/potions';
+import { Potion, PotionsReqParams } from '../../api/types/potions';
 import defineNumberOfPages from '../Pagination/defineNumberOfPages';
 
 export async function loader(params: PotionsReqParams) {
   const res = await HpApi.getPotions(params);
-  let items = null;
+  let items: Potion[] = [];
   let pagination = null;
 
   if (res) {
