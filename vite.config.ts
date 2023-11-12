@@ -7,16 +7,18 @@ import react from '@vitejs/plugin-react';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/RSReact',
+  base: '/RSSchool-react-course',
   test: {
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./vitest-setup.ts'],
     coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      reportsDirectory: './src/tests/coverage',
       all: true,
-      include: ['src/scripts', '**/*.tsx'],
-      exclude: ['src/main.tsx', '**/types', '**/data', '**/*.ts'],
+      include: ['**/*.tsx'],
+      exclude: ['src/main.tsx'],
     },
-    css: true,
   },
 });

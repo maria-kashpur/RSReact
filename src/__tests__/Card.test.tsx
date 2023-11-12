@@ -138,5 +138,6 @@ describe('Tests for the Card List component', () => {
       />
     );
     expect(container.getElementsByClassName('cards mini').length).toBe(1);
+    expect(container.getElementsByClassName('cards mini').length).toBe(1);
   });
 });
