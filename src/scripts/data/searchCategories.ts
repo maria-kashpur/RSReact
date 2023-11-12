@@ -1,4 +1,4 @@
-import { APotionsFilter } from '../../../api/types/potions';
+import { APotionsFilter } from '../api/types/potions';
 
 export const categories: APotionsFilter[] = [
   'characteristics',

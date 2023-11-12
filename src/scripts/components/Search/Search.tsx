@@ -1,64 +1,42 @@
-import { useContext, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import './search.scss';
-import { APotionsFilter, PotionsReqParams } from '../../api/types/potions';
-import { arrowIco, resetIco, searchBtnIco } from './ico';
+import { APotionsFilter } from '../../api/types/potions';
+import { arrowIco, resetIco, searchBtnIco } from './data/ico';
 import { useNavigate } from 'react-router';
-import { saveParamsInLS } from '../App/data/localStorage';
 import { IContext, PotionsParamsContext } from '../../providers/HPParamsProvider';
+import React from 'react';
+import { categories } from '../../data/searchCategories';
 
-export default function Search() {
-  const { categories, setParams, params } = useContext(PotionsParamsContext) as IContext;
+const Search = React.memo(() => {
+  const { searchCategory, setSearchCategory, searchValue, setSearchValue, setPaginationPage } =
+    useContext(PotionsParamsContext) as Required<IContext>;
 
-  const [currentCategory, setCurrentCategory] = useState<APotionsFilter>(
-    params.filters && params.filters.length === 1 ? params.filters[0].attribute : 'name'
-  );
-  const [searchValue, setSearchValue] = useState<string | null>(
-    params.filters && params.filters.length === 1 ? params.filters[0].what : ''
-  );
+  const [currentCategory, setCurrentCategory] = useState<APotionsFilter>(searchCategory);
+  const [value, setValue] = useState<string>(searchValue);
+
   const [openCategories, setOpenCategories] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
-  const handleSendParams = async (filter: PotionsReqParams['filters']) => {
-    const newParams = {
-      ...params,
-      filters: filter,
-      pagination: {
-        page: 1,
-        limit: params.pagination.limit,
-      },
-    };
-    setParams(newParams);
-    saveParamsInLS(JSON.stringify(newParams));
+  const heandleSearch = useCallback(() => {
+    setSearchCategory(currentCategory);
+    setSearchValue(value);
+    setPaginationPage(1);
     if (location.pathname !== '/') {
       navigate('/');
     }
-  };
-
-  const heandleSearch = () => {
-    if (searchValue === '') {
-      handleSendParams(undefined);
-    } else {
-      const param: PotionsReqParams['filters'] = [
-        {
-          attribute: currentCategory,
-          predicate: 'cont_any',
-          what: searchValue,
-        },
-      ];
-      handleSendParams(param);
-    }
-  };
+  }, [currentCategory, navigate, setPaginationPage, setSearchCategory, setSearchValue, value]);
 
   return (
     <div className="search">
       <label className="search__text">
         <input
+          data-testid="searchInput"
           type="text"
           required
-          value={searchValue ? searchValue : ''}
+          value={value}
           onChange={(e) => {
-            setSearchValue(e.target.value);
+            setValue(e.target.value);
           }}
         />
 
@@ -68,12 +46,14 @@ export default function Search() {
           {currentCategory.toUpperCase()}
         </span>
       </label>
+
       <button
-        className={`search__reset ${searchValue === '' ? '' : 'active'}`}
-        onClick={() => setSearchValue('')}
+        className={`search__reset ${value === '' ? '' : 'active'}`}
+        onClick={() => setValue('')}
       >
         {resetIco}
       </button>
+
       <div className="search__category" onClick={() => setOpenCategories(!openCategories)}>
         <div className="search__current_category">
           <span className={`arrow_ico ${openCategories ? 'active' : ''}`}>{arrowIco}</span>
@@ -95,9 +75,12 @@ export default function Search() {
           ))}
         </ul>
       </div>
-      <button className="search__btn" onClick={() => heandleSearch()}>
+
+      <button className="search__btn" onClick={() => heandleSearch()} data-testid="searchBtn">
         {searchBtnIco}
       </button>
     </div>
   );
-}
+});
+
+export default Search;

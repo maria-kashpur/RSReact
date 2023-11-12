@@ -1,6 +1,5 @@
-import { useContext, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import s from './input_number.module.scss';
-import { saveParamsInLS } from '../App/data/localStorage';
 import { IContext, PotionsParamsContext } from '../../providers/HPParamsProvider';
 
 interface IProps {
@@ -10,48 +9,55 @@ interface IProps {
 }
 
 export default function InputNumber({ minValue, maxValue, title }: IProps) {
-  const { params, setParams } = useContext(PotionsParamsContext) as IContext;
-  const [currentValue, setCurrentValue] = useState(params.pagination.limit);
+  const { setPaginationPage, paginationLimit, setPaginationLimit } = useContext(
+    PotionsParamsContext
+  ) as Required<IContext>;
+  const [currentValue, setCurrentValue] = useState(paginationLimit);
 
-  const handleChangePagitionLimit = (value: number) => {
-    const newParams = { ...params };
-    newParams.pagination.limit = value;
-    newParams.pagination.page = 1;
-    setParams(() => newParams);
-    saveParamsInLS(JSON.stringify(newParams));
-  };
+  const handleChangePagitionLimit = useCallback(
+    (value: number) => {
+      setPaginationPage(1);
+      setPaginationLimit(value);
+    },
+    [setPaginationLimit, setPaginationPage]
+  );
 
-  const hundleClick = (act: '+' | '-' | number) => {
-    let newValue = currentValue;
-    switch (act) {
-      case '+':
-        newValue = newValue + 1;
-        break;
-      case '-':
-        newValue = newValue - 1;
-        break;
-      default:
-        break;
-    }
-    if (typeof act === 'number') {
-      newValue = act;
-    }
-    setCurrentValue(() => newValue);
-    handleChangePagitionLimit(newValue);
-  };
+  const hundleClick = useCallback(
+    (act: '+' | '-' | number) => {
+      let newValue = currentValue;
+      switch (act) {
+        case '+':
+          newValue = newValue + 1;
+          break;
+        case '-':
+          newValue = newValue - 1;
+          break;
+        default:
+          break;
+      }
+      if (typeof act === 'number') {
+        newValue = act;
+      }
+      setCurrentValue(() => newValue);
+      handleChangePagitionLimit(newValue);
+    },
+    [currentValue, handleChangePagitionLimit]
+  );
 
   return (
-    <div className={s.wrap}>
+    <div className={s.wrap} data-testid="pagintionWrap">
       {title ? <h2 className={s.title}>{title}</h2> : ''}
       <div className={s.number}>
         <button
           className={`${s['number-minus']} ${currentValue === minValue ? `${s.disabled}` : ''}`}
           type="button"
           onClick={() => hundleClick('-')}
+          data-testid="decreaseInputLimit"
         >
           -
         </button>
         <input
+          data-testid="inputLimit"
           type="number"
           min={minValue}
           max={maxValue}
@@ -63,6 +69,7 @@ export default function InputNumber({ minValue, maxValue, title }: IProps) {
         />
         <button
           className={`${s['number-plus']} ${currentValue === maxValue ? 'disabled' : ''}`}
+          data-testid="increaseInputLimit"
           type="button"
           onClick={() => hundleClick('+')}
         >

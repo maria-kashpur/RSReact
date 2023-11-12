@@ -1,5 +1,5 @@
 import './error_page.scss';
-import img from '../../../../assets/images/harry-potter-4077473_1280.png';
+import img from '../../../assets/images/harry-potter-4077473_1280.png';
 
 export default function ErrorPage() {
   return (

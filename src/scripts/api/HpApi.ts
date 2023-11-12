@@ -160,8 +160,8 @@ export default class HpApi {
 
   static async getPotion(id: string): Promise<PotionResponse> {
     const url = this.endpoints.potions.getForID(id);
-    console.log(url);
     const res = await load(url);
+    console.log(res);
     return res;
   }
 
@@ -170,7 +170,6 @@ export default class HpApi {
     const paramsArr = params ? this.getArrParams(params) : [];
 
     const url = paramsArr.length > 0 ? this.generateUrlWithParams(endpoint, paramsArr) : endpoint;
-    console.log(url);
     const res = await load(url);
     return res;
   }

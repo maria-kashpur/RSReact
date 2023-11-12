@@ -1,30 +1,29 @@
 import { createBrowserRouter } from 'react-router-dom';
-import App from '../components/App/App';
-import ErrorPage from '../api/pages/ErrorPage/ErrorPage';
-import CardDetail from '../components/CardDetail/CardDetail';
+import App from '../pages/App/App';
+import ErrorPage from '../pages/ErrorPage/ErrorPage';
+import CardDetail from '../pages/CardDetail/CardDetail';
 import { PotionsParamsProvider } from '../providers/HPParamsProvider';
 
-const router = createBrowserRouter(
-  [
-    {
-      path: '/',
-      element: (
-        <PotionsParamsProvider>
-          <App />
-        </PotionsParamsProvider>
-      ),
-      errorElement: <ErrorPage />,
-      children: [
-        {
-          path: 'detail/:id',
-          element: <CardDetail />,
-        },
-      ],
-    },
-  ],
+export const routes = [
   {
-    basename: '/RSReact',
-  }
-);
+    path: '/',
+    element: (
+      <PotionsParamsProvider>
+        <App />
+      </PotionsParamsProvider>
+    ),
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: 'detail/:id',
+        element: <CardDetail />,
+      },
+    ],
+  },
+];
+
+const router = createBrowserRouter(routes, {
+  basename: '/RSReact',
+});
 
 export default router;

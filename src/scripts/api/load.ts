@@ -8,7 +8,7 @@ export async function load(url: string) {
       return false;
     }
     const data = await res.json();
-    // console.log(data);
+    console.log(data);
     return data;
   } catch (e) {
     console.error(e);

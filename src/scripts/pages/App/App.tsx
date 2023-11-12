@@ -1,28 +1,30 @@
 import { useContext, useEffect, useState } from 'react';
-import Search from '../Search/Search';
-import Cards from '../Cards/Cards';
+import Search from '../../components/Search/Search';
+import Cards from '../../components/Cards/Cards';
 import { PotionsResponse } from '../../api/types/potions';
-import Pagination from '../Pagination/Pagination';
-import BtnError from '../BtnError/BtnError';
-import Loader from '../Preloader/Preloader';
+import Pagination from '../../components/Pagination/Pagination';
+import BtnError from '../../components/BtnError/BtnError';
+import Loader from '../../components/Preloader/Preloader';
 import './app.scss';
-import InputNumber from '../InputNumber/InputNumber';
+import InputNumber from '../../components/InputNumber/InputNumber';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import { loader } from './loader';
 import { CardsContextProvider } from '../../providers/CardsProvider';
 import { IContext, PotionsParamsContext } from '../../providers/HPParamsProvider';
+import { saveParamsInLS } from '../../utils/localStorage';
+import { createParams } from '../../utils/createParams';
+import React from 'react';
 
 export interface IPagination {
   current: number;
-  last: number;
-  next: number;
   pages: number;
 }
 
-export default function App() {
-  const { params, setSearchParams } = useContext(PotionsParamsContext) as IContext;
+const App = React.memo(() => {
+  const { searchCategory, paginationLimit, paginationPage, searchValue, setSearchParams } =
+    useContext(PotionsParamsContext) as Required<IContext>;
 
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState<boolean>(true);
   const [items, setItems] = useState<PotionsResponse['data']>([]);
 
   const [pagination, setPagination] = useState<IPagination | null>(null);
@@ -30,14 +32,16 @@ export default function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const params = createParams(searchCategory, paginationLimit, paginationPage, searchValue);
     setIsLoaded(() => false);
     loader(params).then(({ items, pagination }) => {
       setItems(() => items);
       setPagination(() => pagination);
       setSearchParams({ page: `${params.pagination.page}`, limit: `${params.pagination.limit}` });
       setIsLoaded(() => true);
+      saveParamsInLS(JSON.stringify(params));
     });
-  }, [params, setSearchParams]);
+  }, [paginationLimit, paginationPage, searchCategory, searchValue, setSearchParams]);
 
   const template = (
     <div className="content conteiner">
@@ -57,17 +61,8 @@ export default function App() {
           }}
         >
           <InputNumber minValue={1} title={'Cards limit on the page:'} maxValue={100} />
-          {isLoaded && pagination && items && items.length > 0 ? (
-            <Pagination pagination={pagination} />
-          ) : (
-            ''
-          )}
+          {isLoaded && pagination && items.length > 0 ? <Pagination pagination={pagination} /> : ''}
           {isLoaded ? <Cards /> : ''}
-          {/* {items && items.length === 0 ? (
-            <p className="messege"> No results were found for your request</p>
-          ) : (
-            ''
-          )} */}
         </div>
         <Outlet />
       </div>
@@ -80,4 +75,6 @@ export default function App() {
       {template}
     </CardsContextProvider>
   );
-}
+});
+
+export default App;

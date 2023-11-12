@@ -1,13 +1,11 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { PotionsResponse } from '../api/types/potions';
-import { useLocation } from 'react-router';
 
-interface IContext {
+export interface IContext {
   data: PotionsResponse['data'];
-  variant: 'full' | 'mini';
 }
 
-export const CardsContext = React.createContext<IContext>({ data: [], variant: 'full' });
+export const CardsContext = React.createContext<IContext | null>(null);
 
 export const CardsContextProvider = ({
   children,
@@ -17,11 +15,10 @@ export const CardsContextProvider = ({
   children: ReactNode;
   data: PotionsResponse['data'];
 }) => {
-  const location = useLocation();
-  const variant = location.pathname === '/' ? 'full' : 'mini';
+  const value = useMemo(() => ({ data }) as IContext, [data]);
 
   return (
-    <CardsContext.Provider value={{ data, variant }} {...props}>
+    <CardsContext.Provider value={value} {...props}>
       {children}
     </CardsContext.Provider>
   );

@@ -1,4 +1,4 @@
-import defineNumberOfPages from './defineNumberOfPages';
+import defineNumberOfPages from '../../scripts/utils/defineNumberOfPages';
 
 describe('testing defineNumberOfPage', () => {
   test('defineNumberOfPages should return number of page', () => {
