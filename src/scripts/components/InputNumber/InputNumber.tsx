@@ -1,6 +1,7 @@
 import { useCallback, useContext, useState } from 'react';
 import s from './input_number.module.scss';
 import { IContext, PotionsParamsContext } from '../../providers/HPParamsProvider';
+import { useAppSelector } from '../../store/store';
 
 interface IProps {
   minValue?: number;
@@ -13,6 +14,9 @@ export default function InputNumber({ minValue, maxValue, title }: IProps) {
     PotionsParamsContext
   ) as Required<IContext>;
   const [currentValue, setCurrentValue] = useState(paginationLimit);
+
+  const { limit } = useAppSelector((state) => state.potionReducer);
+  console.log(limit);
 
   const handleChangePagitionLimit = useCallback(
     (value: number) => {
