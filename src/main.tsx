@@ -4,10 +4,8 @@ import './styles/index.scss';
 import ErrorBoundary from './scripts/components/ErrorBoundary/ErrorBoundary.tsx';
 import { RouterProvider } from 'react-router';
 import router from './scripts/router/router.tsx';
-import { setupStore } from './scripts/store/store.ts';
+import { store } from './scripts/store/store.ts';
 import { Provider } from 'react-redux';
-
-const store = setupStore();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

@@ -1,7 +1,7 @@
-import { useCallback, useContext, useState } from 'react';
 import s from './input_number.module.scss';
-import { IContext, PotionsParamsContext } from '../../providers/HPParamsProvider';
-import { useAppSelector } from '../../store/store';
+import { useAppDispatch, useAppSelector } from '../../store/store';
+import { setLimit } from '../../store/reducers/potionSlice';
+import { useSearchParams } from 'react-router-dom';
 
 interface IProps {
   minValue?: number;
@@ -10,50 +10,36 @@ interface IProps {
 }
 
 export default function InputNumber({ minValue, maxValue, title }: IProps) {
-  const { setPaginationPage, paginationLimit, setPaginationLimit } = useContext(
-    PotionsParamsContext
-  ) as Required<IContext>;
-  const [currentValue, setCurrentValue] = useState(paginationLimit);
-
+  const [, setSearchParams] = useSearchParams();
+  const dispatch = useAppDispatch();
   const { limit } = useAppSelector((state) => state.potionReducer);
-  console.log(limit);
 
-  const handleChangePagitionLimit = useCallback(
-    (value: number) => {
-      setPaginationPage(1);
-      setPaginationLimit(value);
-    },
-    [setPaginationLimit, setPaginationPage]
-  );
+  const hundleClick = (act: '+' | '-' | number) => {
+    let newValue = limit;
+    switch (act) {
+      case '+':
+        newValue = newValue + 1;
+        break;
+      case '-':
+        newValue = newValue - 1;
+        break;
+      default:
+        break;
+    }
+    if (typeof act === 'number') {
+      newValue = act;
+    }
 
-  const hundleClick = useCallback(
-    (act: '+' | '-' | number) => {
-      let newValue = currentValue;
-      switch (act) {
-        case '+':
-          newValue = newValue + 1;
-          break;
-        case '-':
-          newValue = newValue - 1;
-          break;
-        default:
-          break;
-      }
-      if (typeof act === 'number') {
-        newValue = act;
-      }
-      setCurrentValue(() => newValue);
-      handleChangePagitionLimit(newValue);
-    },
-    [currentValue, handleChangePagitionLimit]
-  );
+    setSearchParams({ page: `1`, limit: `${newValue}` });
+    dispatch(setLimit(newValue));
+  };
 
   return (
     <div className={s.wrap} data-testid="pagintionWrap">
       {title ? <h2 className={s.title}>{title}</h2> : ''}
       <div className={s.number}>
         <button
-          className={`${s['number-minus']} ${currentValue === minValue ? `${s.disabled}` : ''}`}
+          className={`${s['number-minus']} ${limit === minValue ? `${s.disabled}` : ''}`}
           type="button"
           onClick={() => hundleClick('-')}
           data-testid="decreaseInputLimit"
@@ -66,13 +52,13 @@ export default function InputNumber({ minValue, maxValue, title }: IProps) {
           min={minValue}
           max={maxValue}
           readOnly={true}
-          value={currentValue}
+          value={limit}
           onChange={(e) => {
             hundleClick(+e.target.value);
           }}
         />
         <button
-          className={`${s['number-plus']} ${currentValue === maxValue ? 'disabled' : ''}`}
+          className={`${s['number-plus']} ${limit === maxValue ? 'disabled' : ''}`}
           data-testid="increaseInputLimit"
           type="button"
           onClick={() => hundleClick('+')}

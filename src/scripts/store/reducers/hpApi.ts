@@ -1,7 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { PotionsResponse } from '../../api/types/potions';
+import defineNumberOfPages from '../../utils/defineNumberOfPages';
 
-interface IQueryGetPotions {
+export interface IQueryGetPotions {
   page: number;
   limit: number;
   category:
@@ -12,7 +13,7 @@ interface IQueryGetPotions {
     | 'inventors'
     | 'ingredients'
     | 'manufacturers'
-    | 'side_effects'
+    | 'side effects'
     | 'time';
   search: string;
 }
@@ -20,7 +21,7 @@ interface IQueryGetPotions {
 interface IGetPotionsResponse {
   potions: PotionsResponse['data'];
   page: number;
-  records: number;
+  pages: number;
 }
 
 const BASE_URL = 'https://api.potterdb.com/v1/';
@@ -33,19 +34,26 @@ export const potionApi = createApi({
       query: (params) => {
         const { page, limit, category, search } = params;
         const searchQuery =
-          search === '' ? '' : `&filter[${category}__cont_any]=${search.split(' ').join('%20')}`;
+          search === ''
+            ? ''
+            : `&filter[${category.split('_').join(' ')}_cont_any]=${search.split(' ').join('%20')}`;
         const pageQuery = `page[number]=${page}`;
         const limitQuery = `page[size]=${limit}`;
         const queryString = [pageQuery, limitQuery, searchQuery]
           .filter((el) => el !== '')
           .join('&');
+        console.log(queryString);
         return `potions/?${queryString}`;
       },
-      transformResponse: (response: PotionsResponse) => ({
-        potions: response.data,
-        page: response.meta.pagination.current,
-        records: response.meta.pagination.records | 0,
-      }),
+      transformResponse: (response: PotionsResponse, _meta, arg) => {
+        const pages = defineNumberOfPages(response.meta.pagination.records, arg.limit);
+        console.log(pages);
+        return {
+          potions: response.data,
+          page: response.meta.pagination.current,
+          pages,
+        };
+      },
     }),
   }),
 });

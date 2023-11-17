@@ -1,6 +1,6 @@
-import { APotionsFilter } from '../api/types/potions';
+import { IQueryGetPotions } from '../store/reducers/hpApi';
 
-export const categories: APotionsFilter[] = [
+export const categories: IQueryGetPotions['category'][] = [
   'characteristics',
   'difficulty',
   'effect',
@@ -8,6 +8,6 @@ export const categories: APotionsFilter[] = [
   'ingredients',
   'manufacturers',
   'name',
-  'side_effects',
+  'side effects',
   'time',
 ];
