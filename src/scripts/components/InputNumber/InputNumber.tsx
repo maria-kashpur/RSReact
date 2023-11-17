@@ -50,6 +50,7 @@ export default function InputNumber({ minValue, maxValue, title }: IProps) {
           data-testid="inputLimit"
           type="number"
           min={minValue}
+          name="limitInput"
           max={maxValue}
           readOnly={true}
           value={limit}

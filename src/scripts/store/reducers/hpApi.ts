@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
-import { PotionsResponse } from '../../api/types/potions';
+import { Potion, PotionResponse, PotionsResponse } from '../../api/types/potions';
 import defineNumberOfPages from '../../utils/defineNumberOfPages';
 
 export interface IQueryGetPotions {
@@ -23,6 +23,11 @@ interface IGetPotionsResponse {
   page: number;
   pages: number;
 }
+interface IGetPotionResponse {
+  image: string | null;
+  name: string | null;
+  attributes: Potion['attributes'];
+}
 
 const BASE_URL = 'https://api.potterdb.com/v1/';
 
@@ -42,12 +47,10 @@ export const potionApi = createApi({
         const queryString = [pageQuery, limitQuery, searchQuery]
           .filter((el) => el !== '')
           .join('&');
-        console.log(queryString);
         return `potions/?${queryString}`;
       },
       transformResponse: (response: PotionsResponse, _meta, arg) => {
         const pages = defineNumberOfPages(response.meta.pagination.records, arg.limit);
-        console.log(pages);
         return {
           potions: response.data,
           page: response.meta.pagination.current,
@@ -55,7 +58,19 @@ export const potionApi = createApi({
         };
       },
     }),
+    getPotion: build.query<IGetPotionResponse, string | number>({
+      query: (id) => {
+        return `potions/${id}`;
+      },
+      transformResponse: (response: PotionResponse) => {
+        return {
+          name: response.data.attributes.name,
+          image: response.data.attributes.image,
+          attributes: response.data.attributes,
+        };
+      },
+    }),
   }),
 });
 
-export const { useGetPotionsQuery } = potionApi;
+export const { useGetPotionsQuery, useGetPotionQuery } = potionApi;

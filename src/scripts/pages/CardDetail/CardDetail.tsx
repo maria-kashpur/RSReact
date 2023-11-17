@@ -1,29 +1,13 @@
 import { Link, useParams } from 'react-router-dom';
 import s from './card_detail.module.scss';
-import { useEffect, useState } from 'react';
-import HpApi from '../../api/HpApi';
-import { PotionResponse } from '../../api/types/potions';
 import defoultIco from '../../../assets/images/3808217_cauldron_halloween_pot_potion_witch_icon (1).svg';
-import { createAttributes } from './createAttributes';
 import { closeIco } from '../../data/closeIco';
+import { useGetPotionQuery } from '../../store/reducers/hpApi';
+import { createAttributes } from './createAttributes';
 
 export default function CardDetail() {
   const { id } = useParams();
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [card, setCard] = useState<PotionResponse['data'] | null>(null);
-
-  useEffect(() => {
-    const getData = async () => {
-      const res = await HpApi.getPotion(`${id}`);
-      if (!res) return;
-      setCard(() => res.data);
-      setIsLoaded(() => true);
-    };
-    getData();
-    return () => {
-      setCard(null);
-    };
-  }, [id]);
+  const { data, isFetching } = useGetPotionQuery(`${id}`);
 
   return (
     <div className={`${s.box} cardDetailBox`} data-testid="cardDetailBox">
@@ -31,21 +15,17 @@ export default function CardDetail() {
         {closeIco}
       </Link>
 
-      {isLoaded ? (
+      {!isFetching ? (
         <div className={s.content}>
           <div className={s.content__img}>
-            <img
-              data-testid="cardDetailImg"
-              src={`${card?.attributes.image || defoultIco}`}
-              alt="image"
-            />
+            <img data-testid="cardDetailImg" src={`${data?.image || defoultIco}`} alt="image" />
           </div>
           <div className={s.content__text}>
             <h2 className={s.content_text__title} data-testid="cardDetailName">
-              {card?.attributes.name}
+              {data?.name}
             </h2>
             <div className={s.detail} data-testid="cardDetailDetail">
-              {Object.entries(createAttributes(card)).map(([title, content]) => (
+              {Object.entries(createAttributes(data?.attributes)).map(([title, content]) => (
                 <div key={title} className={`${s.item}`}>
                   <div className={s.item__title} data-testid="DetailTitle">
                     {title}:
@@ -59,7 +39,9 @@ export default function CardDetail() {
           </div>
         </div>
       ) : (
-        <h3 data-testid="cardDetailLoading">loading...</h3>
+        <h3 data-testid="cardDetailLoading" style={{ textAlign: 'center' }}>
+          loading...
+        </h3>
       )}
     </div>
   );

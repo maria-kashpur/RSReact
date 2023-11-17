@@ -32,6 +32,7 @@ const Search = React.memo(() => {
           data-testid="searchInput"
           type="text"
           required
+          name="searchInput"
           value={currentSearch}
           onChange={(e) => {
             setCurrentSearch(e.target.value);

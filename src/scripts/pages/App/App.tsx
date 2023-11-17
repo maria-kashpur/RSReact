@@ -9,7 +9,13 @@ import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useGetPotionsQuery } from '../../store/reducers/hpApi';
 import { useAppDispatch, useAppSelector } from '../../store/store';
-import { setPotions, setPages, setPage, setLimit } from '../../store/reducers/potionSlice';
+import {
+  setPotions,
+  setPages,
+  setPage,
+  setLimit,
+  setPotionsIsLoading,
+} from '../../store/reducers/potionSlice';
 
 export interface IPagination {
   current: number;
@@ -20,7 +26,7 @@ const App = () => {
   const dispatch = useAppDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const { limit, page, search, category } = useAppSelector((state) => state.potionReducer);
-  const { data } = useGetPotionsQuery({ page, limit, search, category });
+  const { data, isFetching } = useGetPotionsQuery({ page, limit, search, category });
 
   useEffect(() => {
     const limitUrl = searchParams.get('limit');
@@ -35,7 +41,8 @@ const App = () => {
   useEffect(() => {
     dispatch(setPotions(data?.potions || []));
     dispatch(setPages(data?.pages || 1));
-  }, [data?.pages, data?.potions, dispatch]);
+    dispatch(setPotionsIsLoading(isFetching));
+  }, [data?.pages, data?.potions, dispatch, isFetching]);
 
   const location = useLocation();
   const navigate = useNavigate();

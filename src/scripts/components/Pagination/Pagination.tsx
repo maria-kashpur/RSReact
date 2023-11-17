@@ -6,7 +6,7 @@ import { useSearchParams } from 'react-router-dom';
 
 const Pagination = () => {
   const dispatch = useAppDispatch();
-  const { pages, page, limit } = useAppSelector((state) => state.potionReducer);
+  const { pages, page, limit, potionsIsLoading } = useAppSelector((state) => state.potionReducer);
   const [, setSearchParams] = useSearchParams();
 
   const handlePaginationClick = (btn: 'start' | 'next' | 'prev' | 'end') => {
@@ -30,7 +30,7 @@ const Pagination = () => {
   };
 
   return (
-    <div className="pagination">
+    <div className="pagination" style={{ opacity: potionsIsLoading ? 0 : 1 }}>
       <div
         className={`pagination__start pagination__btn ${page <= 1 ? 'disabled' : ''}`}
         onClick={() => handlePaginationClick('start')}

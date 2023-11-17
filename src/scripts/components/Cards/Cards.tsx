@@ -3,9 +3,10 @@ import CardPotion from '../CardPotion/CardPotion';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Potion } from '../../api/types/potions';
 import { useAppSelector } from '../../store/store';
+import Preloader from '../Preloader/Preloader';
 
 export default function Cards() {
-  const { potions } = useAppSelector((state) => state.potionReducer);
+  const { potions, potionsIsLoading } = useAppSelector((state) => state.potionReducer);
 
   const location = useLocation();
   const variant = location.pathname === '/' ? 'full' : 'mini';
@@ -35,5 +36,5 @@ export default function Cards() {
       NoCardsMessege
     );
 
-  return template;
+  return potionsIsLoading ? <Preloader /> : template;
 }
