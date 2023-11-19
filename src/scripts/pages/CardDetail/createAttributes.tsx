@@ -1,17 +1,17 @@
-import { PotionResponse } from '../../api/types/potions';
+import { Potion } from '../../api/types/potions';
 
-export function createAttributes(card: PotionResponse['data'] | null) {
+export function createAttributes(card?: Potion['attributes']) {
   if (!card) return {};
 
   return {
-    characteristics: card.attributes.characteristics?.toLowerCase() || 'heaven knows',
-    difficulty: card.attributes.difficulty?.toLowerCase() || 'heaven knows',
-    effect: card.attributes.effect?.toLowerCase() || 'heaven knows',
-    manufacturers: card.attributes.manufacturers?.toLowerCase() || 'heaven knows',
-    inventors: card.attributes.inventors?.toLowerCase() || 'heaven knows',
-    'side effects': card.attributes.side_effects?.toLowerCase() || 'heaven knows',
+    characteristics: card.characteristics?.toLowerCase() || 'heaven knows',
+    difficulty: card.difficulty?.toLowerCase() || 'heaven knows',
+    effect: card.effect?.toLowerCase() || 'heaven knows',
+    manufacturers: card.manufacturers?.toLowerCase() || 'heaven knows',
+    inventors: card.inventors?.toLowerCase() || 'heaven knows',
+    'side effects': card.side_effects?.toLowerCase() || 'heaven knows',
     ingredients:
-      card.attributes.ingredients
+      card.ingredients
         ?.toLowerCase()
         .split(',')
         .map((el, i, arr) => (

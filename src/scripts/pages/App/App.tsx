@@ -1,47 +1,51 @@
-import { useContext, useEffect, useState } from 'react';
 import Search from '../../components/Search/Search';
 import Cards from '../../components/Cards/Cards';
-import { PotionsResponse } from '../../api/types/potions';
 import Pagination from '../../components/Pagination/Pagination';
 import BtnError from '../../components/BtnError/BtnError';
-import Loader from '../../components/Preloader/Preloader';
 import './app.scss';
 import InputNumber from '../../components/InputNumber/InputNumber';
 import { Outlet, useLocation, useNavigate } from 'react-router';
-import { loader } from './loader';
-import { CardsContextProvider } from '../../providers/CardsProvider';
-import { IContext, PotionsParamsContext } from '../../providers/HPParamsProvider';
-import { saveParamsInLS } from '../../utils/localStorage';
-import { createParams } from '../../utils/createParams';
-import React from 'react';
+import { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useGetPotionsQuery } from '../../store/reducers/hpApi';
+import { useAppDispatch, useAppSelector } from '../../store/store';
+import {
+  setPotions,
+  setPages,
+  setPage,
+  setLimit,
+  setPotionsIsLoading,
+} from '../../store/reducers/potionSlice';
 
 export interface IPagination {
   current: number;
   pages: number;
 }
 
-const App = React.memo(() => {
-  const { searchCategory, paginationLimit, paginationPage, searchValue, setSearchParams } =
-    useContext(PotionsParamsContext) as Required<IContext>;
-
-  const [isLoaded, setIsLoaded] = useState<boolean>(true);
-  const [items, setItems] = useState<PotionsResponse['data']>([]);
-
-  const [pagination, setPagination] = useState<IPagination | null>(null);
-  const location = useLocation();
-  const navigate = useNavigate();
+const App = () => {
+  const dispatch = useAppDispatch();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { limit, page, search, category } = useAppSelector((state) => state.potionReducer);
+  const { data, isFetching } = useGetPotionsQuery({ page, limit, search, category });
 
   useEffect(() => {
-    const params = createParams(searchCategory, paginationLimit, paginationPage, searchValue);
-    setIsLoaded(() => false);
-    loader(params).then(({ items, pagination }) => {
-      setItems(() => items);
-      setPagination(() => pagination);
-      setSearchParams({ page: `${params.pagination.page}`, limit: `${params.pagination.limit}` });
-      setIsLoaded(() => true);
-      saveParamsInLS(JSON.stringify(params));
-    });
-  }, [paginationLimit, paginationPage, searchCategory, searchValue, setSearchParams]);
+    const limitUrl = searchParams.get('limit');
+    const pageUrl = searchParams.get('page');
+    if (!limitUrl || !pageUrl) {
+      setSearchParams({ page: `${pageUrl || page}`, limit: `${limitUrl || limit}` });
+    }
+    if (limitUrl) dispatch(setLimit(+limitUrl));
+    if (pageUrl) dispatch(setPage(+pageUrl));
+  }, [dispatch, limit, page, searchParams, setSearchParams]);
+
+  useEffect(() => {
+    dispatch(setPotions(data?.potions || []));
+    dispatch(setPages(data?.pages || 1));
+    dispatch(setPotionsIsLoading(isFetching));
+  }, [data?.pages, data?.potions, dispatch, isFetching]);
+
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const template = (
     <div className="content conteiner">
@@ -61,20 +65,15 @@ const App = React.memo(() => {
           }}
         >
           <InputNumber minValue={1} title={'Cards limit on the page:'} maxValue={100} />
-          {isLoaded && pagination && items.length > 0 ? <Pagination pagination={pagination} /> : ''}
-          {isLoaded ? <Cards /> : ''}
+          <Pagination />
+          <Cards />
         </div>
         <Outlet />
       </div>
     </div>
   );
 
-  return (
-    <CardsContextProvider data={items}>
-      {isLoaded ? '' : <Loader />}
-      {template}
-    </CardsContextProvider>
-  );
-});
+  return template;
+};
 
 export default App;

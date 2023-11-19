@@ -7,7 +7,7 @@ import react from '@vitejs/plugin-react';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/RSSchool-react-course',
+  base: '/RSReact',
   test: {
     environment: 'jsdom',
     globals: true,
