@@ -1,42 +1,24 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import InputNumber from '../scripts/components/InputNumber/InputNumber';
-import ErrorPage from '../scripts/pages/ErrorPage/ErrorPage';
-import { RouterProvider, createMemoryRouter } from 'react-router';
-import { PotionsParamsProvider } from '../scripts/providers/HPParamsProvider';
-
-function getRouter(params: string) {
-  const routes = [
-    {
-      path: '/',
-      element: (
-        <PotionsParamsProvider>
-          <InputNumber minValue={1} title={'Cards limit on the page:'} maxValue={30} />
-        </PotionsParamsProvider>
-      ),
-      errorElement: <ErrorPage />,
-    },
-  ];
-  return createMemoryRouter(routes, {
-    initialEntries: [`/?${params}`],
-    initialIndex: 1,
-  });
-}
+import { fireEvent, render, screen, act } from '@testing-library/react';
+import { getRouter2 } from './data/getRouter';
 
 describe('Testsing InputNumber component', () => {
   test('show InputNumber component', () => {
-    render(<InputNumber />);
+    const { app } = getRouter2('/?page=4&limit=29');
+    render(app);
     expect(screen.getByTestId('pagintionWrap')).toBeInTheDocument();
   });
 
   test('show value inputLimit is 29', () => {
-    render(<RouterProvider router={getRouter('page=4&limit=29')} />);
+    const { app } = getRouter2('/?page=4&limit=29');
+    render(app);
     const inputLimit = screen.getByTestId('inputLimit');
     const value = inputLimit.getAttribute('value');
     expect(value).toBe('29');
   });
 
   test('show value inputLimit is 30 after clicking on increaseInputLimit', () => {
-    render(<RouterProvider router={getRouter('page=4&limit=29')} />);
+    const { app } = getRouter2('/?page=4&limit=29');
+    render(app);
     const inputLimit = screen.getByTestId('inputLimit');
     const buttonPlus = screen.getByTestId('increaseInputLimit');
     fireEvent.click(buttonPlus);
@@ -45,7 +27,8 @@ describe('Testsing InputNumber component', () => {
   });
 
   test('show value inputLimit is 28 after clicking on decreaseInputLimit', () => {
-    render(<RouterProvider router={getRouter('page=4&limit=29')} />);
+    const { app } = getRouter2('/?page=4&limit=29');
+    render(app);
     const inputLimit = screen.getByTestId('inputLimit');
     const buttonMunus = screen.getByTestId('decreaseInputLimit');
     fireEvent.click(buttonMunus);
@@ -53,10 +36,11 @@ describe('Testsing InputNumber component', () => {
     expect(value).toBe('28');
   });
 
-  test('show value inputLimit is 1 after change', () => {
-    render(<RouterProvider router={getRouter('page=4&limit=29')} />);
+  test('show value inputLimit is 1 after change', async () => {
+    const { app } = getRouter2('/?page=4&limit=29');
+    render(app);
     const inputLimit = screen.getByTestId('inputLimit');
-    fireEvent.change(inputLimit, { target: { value: 1 } });
+    await act(async () => fireEvent.change(inputLimit, { target: { value: 1 } }));
     const value = inputLimit.getAttribute('value');
     expect(value).toBe('1');
   });
