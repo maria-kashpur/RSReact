@@ -7,6 +7,7 @@ import { categories } from '../../data/searchCategories';
 import { useAppDispatch, useAppSelector } from '../../store/store';
 import { setSearch } from '../../store/reducers/potionSlice';
 import { IQueryGetPotions } from '../../store/reducers/hpApi';
+import s from './search.module.scss';
 
 const Search = React.memo(() => {
   const dispatch = useAppDispatch();
@@ -26,9 +27,10 @@ const Search = React.memo(() => {
   };
 
   return (
-    <div className="search">
-      <label className="search__text">
+    <div className={s.search_wrap}>
+      <label className={s.text_box}>
         <input
+          className={s.text}
           data-testid="searchInput"
           type="text"
           required
@@ -39,7 +41,7 @@ const Search = React.memo(() => {
           }}
         />
 
-        <span className="search__current_category">
+        <span className={s.current_category}>
           SEARCH
           <br />
           {currentCategory.toUpperCase()}
@@ -47,21 +49,21 @@ const Search = React.memo(() => {
       </label>
 
       <button
-        className={`search__reset ${currentSearch === '' ? '' : 'active'}`}
+        className={`${s.reset} ${currentSearch === '' ? '' : s.active}`}
         onClick={() => setCurrentSearch('')}
       >
         {resetIco}
       </button>
 
-      <div className="search__category" onClick={() => setOpenCategories(!openCategories)}>
-        <div className="search__current_category">
-          <span className={`arrow_ico ${openCategories ? 'active' : ''}`}>{arrowIco}</span>
+      <div className={s.categories_box} onClick={() => setOpenCategories(!openCategories)}>
+        <div className={s.categories_bnt}>
+          <div className={`${s.arrow_ico} ${openCategories ? s.active : ''}`}>{arrowIco}</div>
         </div>
-        <ul className={`search__categories ${openCategories ? 'active' : ''}`}>
+        <ul className={`${s.categories_list} ${openCategories ? s.active : ''}`}>
           {categories.map((category: IQueryGetPotions['category'], index) => (
             <li
               key={`category_potion__${index}`}
-              className="category__item"
+              className={s.categories_list__item}
               onClick={(e) => {
                 if (!e.currentTarget.textContent) return;
                 setCurrentCategory(e.currentTarget.textContent as IQueryGetPotions['category']);
@@ -73,7 +75,7 @@ const Search = React.memo(() => {
         </ul>
       </div>
 
-      <button className="search__btn" onClick={() => handleSearch()} data-testid="searchBtn">
+      <button className={s.search_btn} onClick={() => handleSearch()} data-testid="searchBtn">
         {searchBtnIco}
       </button>
     </div>
