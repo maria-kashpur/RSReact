@@ -1,9 +1,9 @@
-import './preloader.scss';
+import s from './preloader.module.scss';
 
 export default function Preloader() {
   return (
-    <div className="preloader">
-      <span className="preloader__ico"></span>
+    <div className={s.preloader}>
+      <span className={s.preloader__ico}></span>
     </div>
   );
 }
