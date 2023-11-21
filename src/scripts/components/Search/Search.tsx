@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import './search.scss';
 import { arrowIco, resetIco, searchBtnIco } from './data/ico';
 import { useNavigate } from 'react-router';
 import React from 'react';

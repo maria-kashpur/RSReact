@@ -1,4 +1,4 @@
-import './cards.scss';
+import s from './cards.module.scss';
 import CardPotion from '../CardPotion/CardPotion';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Potion } from '../../api/types/potions';
@@ -19,11 +19,11 @@ export default function Cards() {
 
   const template =
     potions.length > 0 ? (
-      <div className={`cards ${variant === 'mini' ? 'mini' : ''}`}>
+      <div className={`${s.cards} ${variant === 'mini' ? s.mini : ''}`}>
         {potions.map((el: Potion) => (
           <NavLink
             to={`/detail/${el.id}`}
-            className={`cards_item`}
+            className={s.cards_item}
             data-testid="cardsItem"
             key={`${el.id}`}
             state={{ id: el.id }}

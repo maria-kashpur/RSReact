@@ -1,5 +1,5 @@
 import { Potion } from '../../api/types/potions';
-import './cardPotion.scss';
+import s from './cardPotion.module.scss';
 interface IProps {
   cardData: Potion;
 }
@@ -11,14 +11,14 @@ export default function CardPotion({ cardData }: IProps) {
   const variant = location.pathname === '/' ? 'full' : 'mini';
 
   return (
-    <div className={`potion_card${variant === 'mini' ? ' mini' : ''}`}>
-      <div className="potion_card__ico">
+    <div className={`${s.potion_card} ${variant === 'mini' ? s.mini : ''}`}>
+      <div className={s.potion_card__ico}>
         <img src={cardData.attributes.image || defoultCardIco} alt="potion" />
       </div>
-      <div className="potion_card__description">
+      <div className={s.potion_card__description}>
         <h3>{cardData.attributes.name}</h3>
         {cardData.attributes.difficulty ? (
-          <div className="potion_card__difficulty" data-testid="potion_card__difficulty">
+          <div className={s.potion_card__difficulty} data-testid="potion_card__difficulty">
             difficulty: {cardData.attributes.difficulty}
           </div>
         ) : (
