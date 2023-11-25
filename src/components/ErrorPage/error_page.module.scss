@@ -1,0 +1,23 @@
+.not_found__box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px auto;
+  max-width: 100%;
+}
+
+.not_found__item {
+  max-width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  img {
+    max-width: 100%;
+  }
+}
+
+.not_found__messege {
+  text-align: center;
+}

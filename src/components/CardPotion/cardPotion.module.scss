@@ -1,0 +1,47 @@
+.potion_card {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  height: 100%;
+  &:hover {
+    .potion_card__ico img {
+      object-fit: contain;
+    }
+  }
+}
+
+.potion_card__ico {
+  height: 200px;
+  width: 100%;
+  img {
+    width: 100%;
+    object-fit: cover;
+  }
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.potion_card__description {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.potion_card__difficulty {
+  color: silver;
+  font-style: italic;
+}
+
+.potion_card.mini {
+  flex-direction: row;
+  .potion_card__difficulty {
+    display: none;
+  }
+  .potion_card__ico {
+    height: 50px;
+    width: 50px;
+  }
+}
