@@ -53,16 +53,14 @@ export default function Pagination() {
         {page}
       </div>
       <div
-        className={`pagination__next pagination__btn ${
-          data?.pages || 1 === page ? 'disabled' : ''
-        }`}
+        className={`pagination__next pagination__btn ${data?.pages === page ? 'disabled' : ''}`}
         onClick={() => handlePaginationClick('next')}
         data-testid="nextPagination"
       >
         {arrow}
       </div>
       <div
-        className={`pagination__end pagination__btn ${data?.pages || 1 === page ? 'disabled' : ''}`}
+        className={`pagination__end pagination__btn ${data?.pages === page ? 'disabled' : ''}`}
         onClick={() => handlePaginationClick('end')}
         data-testid="endPagination"
       >
