@@ -1,5 +1,4 @@
 import { configureStore } from '@reduxjs/toolkit';
-import potionReducer from './reducers/potionSlice';
 import { potionApi } from './reducers/hpApi';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { createWrapper } from 'next-redux-wrapper';
@@ -10,7 +9,6 @@ export type RootState = ReturnType<typeof reducers>;
 export type PreloadState = Partial<RootState>;
 
 export const reducers = combineReducers({
-  cards: potionReducer,
   [potionApi.reducerPath]: potionApi.reducer,
 });
 

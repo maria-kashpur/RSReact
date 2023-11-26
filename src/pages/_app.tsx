@@ -6,7 +6,6 @@ import '@/styles/index.scss';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Preloader from '@/components/Preloader/Preloader';
-import Layout from '@/components/Layout/Layout';
 
 export default function MyApp({ Component, ...rest }: AppProps) {
   const { store, props } = wrapper.useWrappedStore(rest);
@@ -30,9 +29,7 @@ export default function MyApp({ Component, ...rest }: AppProps) {
     <ErrorBoundary>
       <Provider store={store}>
         {loading && <Preloader />}
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <Component {...pageProps} />
       </Provider>
     </ErrorBoundary>
   );

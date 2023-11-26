@@ -3,12 +3,13 @@ import CardPotion from '../CardPotion/CardPotion';
 import { Potion } from '@/types/potions';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { getQuery } from '@/utils/getQuary';
+import { getQuery, getQueryForLink } from '@/utils/getQuery';
 import { useGetPotionsQuery } from '@/store/reducers/hpApi';
 
 export default function Cards() {
   const router = useRouter();
-  const { data } = useGetPotionsQuery(getQuery(router.query));
+  const query = getQuery(router.query);
+  const { data } = useGetPotionsQuery(query);
   const potions = data?.potions;
   const variant = router.pathname === '/' ? 'full' : 'mini';
 
@@ -24,8 +25,10 @@ export default function Cards() {
         {potions.map((el: Potion) => (
           <Link
             href={{
-              pathname: '/detail/[id]',
-              query: { id: `${el.id}` },
+              pathname: `/detail/${el.id}`,
+              query: {
+                ...getQueryForLink(router.query),
+              },
             }}
             key={`${el.id}`}
             className={s.cards_item}

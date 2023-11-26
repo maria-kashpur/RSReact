@@ -1,4 +1,4 @@
-import { getQuery } from '@/utils/getQuary';
+import { getQuery } from '@/utils/getQuery';
 import s from './input_number.module.scss';
 import { useRouter } from 'next/router';
 

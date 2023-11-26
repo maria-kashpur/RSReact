@@ -1,16 +1,15 @@
 import { arrow, duableArrow } from './data/arrowsIco';
 import { useRouter } from 'next/router';
 import { useGetPotionsQuery } from '@/store/reducers/hpApi';
-import { getQuery } from '@/utils/getQuary';
+import { getQuery } from '@/utils/getQuery';
 
-const Pagination = () => {
+export default function Pagination() {
   const router = useRouter();
   const { page } = getQuery(router.query);
-  const { data, isFetching } = useGetPotionsQuery(getQuery(router.query));
-  const pages = data?.pages || 1;
+  const { data } = useGetPotionsQuery(getQuery(router.query));
 
   const handlePaginationClick = (btn: 'start' | 'next' | 'prev' | 'end') => {
-    let currentPage = page;
+    let currentPage = +page;
     switch (btn) {
       case 'start':
         currentPage = 1;
@@ -22,7 +21,7 @@ const Pagination = () => {
         currentPage = page + 1;
         break;
       case 'end':
-        currentPage = pages;
+        currentPage = data?.pages || 1;
         break;
     }
     router.push({
@@ -35,7 +34,7 @@ const Pagination = () => {
   };
 
   return (
-    <div className="pagination" style={{ opacity: isFetching ? 0 : 1 }}>
+    <div className="pagination">
       <div
         className={`pagination__start pagination__btn ${page <= 1 ? 'disabled' : ''}`}
         onClick={() => handlePaginationClick('start')}
@@ -54,14 +53,16 @@ const Pagination = () => {
         {page}
       </div>
       <div
-        className={`pagination__next pagination__btn ${pages === page ? 'disabled' : ''}`}
+        className={`pagination__next pagination__btn ${
+          data?.pages || 1 === page ? 'disabled' : ''
+        }`}
         onClick={() => handlePaginationClick('next')}
         data-testid="nextPagination"
       >
         {arrow}
       </div>
       <div
-        className={`pagination__end pagination__btn ${pages === page ? 'disabled' : ''}`}
+        className={`pagination__end pagination__btn ${data?.pages || 1 === page ? 'disabled' : ''}`}
         onClick={() => handlePaginationClick('end')}
         data-testid="endPagination"
       >
@@ -69,6 +70,4 @@ const Pagination = () => {
       </div>
     </div>
   );
-};
-
-export default Pagination;
+}

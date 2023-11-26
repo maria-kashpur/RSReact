@@ -2,7 +2,6 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { HYDRATE } from 'next-redux-wrapper';
 import defineNumberOfPages from '../../utils/defineNumberOfPages';
 import { Potion, PotionResponse, PotionsResponse } from '@/types/potions';
-import { setPages, setPotion, setPotions } from './potionSlice';
 
 export interface IQueryGetPotions {
   page: number;
@@ -36,7 +35,6 @@ export const potionApi = createApi({
     getPotions: build.query<IGetPotionsResponse, IQueryGetPotions>({
       query: (params) => {
         const { page, limit, category, search } = params;
-        console.log(params);
         const searchQuery =
           search === ''
             ? ''
@@ -46,7 +44,6 @@ export const potionApi = createApi({
         const queryString = [pageQuery, limitQuery, searchQuery]
           .filter((el) => el !== '')
           .join('&');
-        console.log(queryString);
         return `potions/?${queryString}`;
       },
       transformResponse: (response: PotionsResponse, _meta, arg) => {
@@ -56,11 +53,6 @@ export const potionApi = createApi({
           page: response.meta.pagination.current,
           pages,
         };
-      },
-      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
-        const data = await queryFulfilled;
-        dispatch(setPotions(data.data.potions));
-        dispatch(setPages(data.data.pages));
       },
     }),
     getPotion: build.query<IGetPotionResponse, string | number>({
@@ -73,16 +65,6 @@ export const potionApi = createApi({
           image: response.data.attributes.image,
           attributes: response.data.attributes,
         };
-      },
-      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
-        const data = await queryFulfilled;
-        dispatch(
-          setPotion({
-            attributes: data.data.attributes,
-            image: data.data.image,
-            name: data.data.name,
-          })
-        );
       },
     }),
   }),

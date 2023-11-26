@@ -4,7 +4,7 @@ import { arrowIco, resetIco, searchBtnIco } from './data/ico';
 import { categories } from '../../data/searchCategories';
 import { IQueryGetPotions } from '../../store/reducers/hpApi';
 import { useRouter } from 'next/router';
-import { getQuery } from '@/utils/getQuary';
+import { getQuery } from '@/utils/getQuery';
 
 const Search = () => {
   const router = useRouter();

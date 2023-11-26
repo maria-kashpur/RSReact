@@ -17,6 +17,7 @@ export default function CardPotion({ cardData }: IProps) {
         {cardData.attributes.image === null ? (
           <Image src={defoultCardIco} alt={'potion'} width={268} height={200} />
         ) : (
+          // eslint-disable-next-line @next/next/no-img-element
           <img src={cardData.attributes.image} alt="potion" />
         )}
       </div>
