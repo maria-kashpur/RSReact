@@ -113,17 +113,24 @@ export default function ControledForm() {
               )}
             />
 
-            <div className="item">
-              <label htmlFor="password_r" className="item__name">
-                Contirm password:
-              </label>
-              <div className="item__value">
-                <input type="password" id="password_r" {...register('passwordRepeat')} />
-                <div className="error_messege">
-                  {errors.passwordRepeat ? errors.passwordRepeat.message : ''}
-                </div>
-              </div>
-            </div>
+            <Controller
+              name="passwordRepeat"
+              control={control}
+              render={({ field }) => (
+                <Password
+                  label={'Repeate password:'}
+                  id={'password_r'}
+                  placeholder={'Repeate password'}
+                  error={
+                    errors.passwordRepeat && errors.passwordRepeat.message
+                      ? errors.passwordRepeat.message
+                      : ''
+                  }
+                  {...field}
+                ></Password>
+              )}
+            />
+
             <div className="item">
               <span className="item__name">Gender:</span>
               <div className="item__value" id="gender">
@@ -140,6 +147,7 @@ export default function ControledForm() {
                 <div className="error_messege">{errors.gender ? errors.gender.message : ''}</div>
               </div>
             </div>
+
             <div className="item">
               <label htmlFor="file" className="item__name">
                 Upload file:
