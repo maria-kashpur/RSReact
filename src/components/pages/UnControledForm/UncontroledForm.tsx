@@ -76,114 +76,119 @@ export default function UncontroledForm() {
   };
 
   return (
-    <div className="conteiner">
+    <>
       <Header></Header>
-      <div className="form-box">
-        <form onSubmit={handleSubmit} className="contact_edit">
-          <InputWrap
-            label={'Name:'}
-            type={'text'}
-            id={'name'}
-            placeholder={'Name'}
-            error={errors.name ? errors.name : ''}
-            name="name"
-          />
-          <InputWrap
-            label={'Age:'}
-            type={'number'}
-            id={'age'}
-            placeholder={'Age'}
-            error={errors.age ? errors.age : ''}
-            name={'age'}
-          />
+      <div className="conteiner">
+        <div className="form-box">
+          <form onSubmit={handleSubmit} className="contact_edit">
+            <InputWrap
+              label={'Name:'}
+              type={'text'}
+              id={'name'}
+              placeholder={'Name'}
+              error={errors.name ? errors.name : ''}
+              name="name"
+            />
+            <InputWrap
+              label={'Age:'}
+              type={'number'}
+              id={'age'}
+              placeholder={'Age'}
+              error={errors.age ? errors.age : ''}
+              name={'age'}
+            />
 
-          <InputWrap
-            label={'Email:'}
-            type={'email'}
-            id={'email'}
-            placeholder={'Email'}
-            error={errors.email ? errors.email : ''}
-            name="email"
-          />
+            <InputWrap
+              label={'Email:'}
+              type={'email'}
+              id={'email'}
+              placeholder={'Email'}
+              error={errors.email ? errors.email : ''}
+              name="email"
+            />
 
-          <Password
-            name="password"
-            label={'Password'}
-            id={'password'}
-            placeholder={'Password'}
-            error={errors.password ? errors.password : ''}
-          >
-            <PasswordStrength strength={valuePasswordStrength} visible={visiblePasswordStrength} />
-          </Password>
+            <Password
+              name="password"
+              label={'Password'}
+              id={'password'}
+              placeholder={'Password'}
+              error={errors.password ? errors.password : ''}
+            >
+              <PasswordStrength
+                strength={valuePasswordStrength}
+                visible={visiblePasswordStrength}
+              />
+            </Password>
 
-          <Password
-            name="passwordRepeat"
-            label={'Repeate password'}
-            id={'password_r'}
-            placeholder={'Repeate password'}
-            error={errors.passwordRepeat ? errors.passwordRepeat : ''}
-          />
+            <Password
+              name="passwordRepeat"
+              label={'Repeate password'}
+              id={'password_r'}
+              placeholder={'Repeate password'}
+              error={errors.passwordRepeat ? errors.passwordRepeat : ''}
+            />
 
-          <div className="item">
-            <span className="item__name">Gender:</span>
-            <div className="item__value" id="gender">
-              <div>
-                <label>
-                  <input type="radio" value="male" name="gender" />
-                  <span>male</span>
-                </label>
-                <label>
-                  <input type="radio" value="female" name="gender" />
-                  <span>female</span>
-                </label>
+            <div className="item">
+              <span className="item__name">Gender:</span>
+              <div className="item__value" id="gender">
+                <div>
+                  <label>
+                    <input type="radio" value="male" name="gender" />
+                    <span>male</span>
+                  </label>
+                  <label>
+                    <input type="radio" value="female" name="gender" />
+                    <span>female</span>
+                  </label>
+                </div>
+                <div className="error_messege">{errors.gender ? errors.gender : ''}</div>
               </div>
-              <div className="error_messege">{errors.gender ? errors.gender : ''}</div>
             </div>
-          </div>
 
-          <div className="item">
-            <label htmlFor="file" className="item__name">
-              Upload file:
-            </label>
-            <div className="item__value">
-              <input type="file" formMethod="post" id="file" name="files" />
-              <div className="error_messege">{errors.files ? errors.files : ''}</div>
-            </div>
-          </div>
-
-          <div className="item">
-            <label htmlFor="country" className="item__name">
-              Country:
-            </label>
-            <div className="item__value">
-              <div>
-                <input list="country-list" type="text" id="country" name="country" />
-                <datalist id="country-list">
-                  {countries.map((el) => (
-                    <option key={el} value={el}>
-                      {el}
-                    </option>
-                  ))}
-                </datalist>
+            <div className="item">
+              <label htmlFor="file" className="item__name">
+                Upload file:
+              </label>
+              <div className="item__value">
+                <input type="file" formMethod="post" id="file" name="files" />
+                <div className="error_messege">{errors.files ? errors.files : ''}</div>
               </div>
-              <div className="error_messege">{errors.country ? errors.country : ''}</div>
             </div>
-          </div>
 
-          <div className="item__value">
-            <label>
-              <input type="checkbox" name="accept" />
-              <span>accept T&C</span>
-            </label>
-            <div className="error_messege">{errors.accept ? errors.accept : ''}</div>
-          </div>
-          <div className="item__submit">
-            <button className="btn-submit" type="submit">
-              Submit
-            </button>
-          </div>
-        </form>
+            <div className="item">
+              <label htmlFor="country" className="item__name">
+                Country:
+              </label>
+              <div className="item__value">
+                <div>
+                  <input list="country-list" type="text" id="country" name="country" />
+                  <datalist id="country-list">
+                    {countries.map((el) => (
+                      <option key={el} value={el}>
+                        {el}
+                      </option>
+                    ))}
+                  </datalist>
+                </div>
+                <div className="error_messege">{errors.country ? errors.country : ''}</div>
+              </div>
+            </div>
+
+            <div className="item__value">
+              <label>
+                <input type="checkbox" name="accept" />
+                <span>accept T&C</span>
+              </label>
+              <div className="error_messege">{errors.accept ? errors.accept : ''}</div>
+            </div>
+            <div className="item__submit">
+              <button className="btn-submit" type="submit">
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
