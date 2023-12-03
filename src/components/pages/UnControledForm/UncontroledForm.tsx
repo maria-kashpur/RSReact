@@ -67,7 +67,7 @@ export default function UncontroledForm() {
           accept: values.accept,
         })
       );
-      navigate('/');
+      navigate('/', { state: { key: 'uncontroled-form' } });
     } catch (err) {
       const errs = err as yup.ValidationError;
       if (errs.name === 'ValidationError') {

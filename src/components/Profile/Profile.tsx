@@ -1,14 +1,30 @@
 import './profile.scss';
 import { IProfile } from '../../types/Iform';
+import { useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 interface IProps {
   data: IProfile;
+  light?: boolean;
 }
 
 export default function Profile(props: IProps) {
+  const [light, setLight] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (props.light) {
+      setLight(() => true);
+      setTimeout(() => {
+        setLight(false);
+      }, 2000);
+    }
+  }, [props.light]);
+  console.log(location.state);
+
   const { file, name, age, gender, country, email, password, accept } = props.data;
   return (
-    <div className="profile">
+    <div className={`profile ${light ? 'light' : ''}`}>
       <div className="contact_img">
         <img src={file} alt="image" />
       </div>

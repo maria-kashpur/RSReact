@@ -36,7 +36,7 @@ export default function ControledForm() {
         accept,
       })
     );
-    navigate('/');
+    navigate('/', { state: { key: 'controled-form' } });
   };
 
   const error: SubmitErrorHandler<IForm> = async (data) => {
