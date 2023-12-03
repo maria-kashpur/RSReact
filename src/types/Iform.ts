@@ -20,3 +20,26 @@ export interface IProfile {
   country: string;
   password: string;
 }
+
+export interface FormFields {
+  name: HTMLInputElement;
+  age: HTMLInputElement;
+  email: HTMLInputElement;
+  gender: HTMLInputElement;
+  password: HTMLInputElement;
+  passwordRepeat: HTMLInputElement;
+  files: HTMLInputElement;
+  accept: HTMLInputElement;
+  country: HTMLInputElement;
+}
+export interface Errors {
+  name?: string;
+  age?: string;
+  email?: string;
+  gender?: string;
+  password?: string;
+  passwordRepeat?: string;
+  files?: string;
+  accept?: string;
+  country?: string;
+}

@@ -6,35 +6,19 @@ import { addProfile } from '../../../store/reducers/formSlice';
 import converToBase64 from '../../../utils/consertToBese64';
 import Header from '../../Header/Header';
 import { useNavigate } from 'react-router';
-
-interface FormFields {
-  name: HTMLInputElement;
-  age: HTMLInputElement;
-  email: HTMLInputElement;
-  gender: HTMLInputElement;
-  password: HTMLInputElement;
-  passwordRepeat: HTMLInputElement;
-  files: HTMLInputElement;
-  accept: HTMLInputElement;
-  country: HTMLInputElement;
-}
-interface Errors {
-  name?: string;
-  age?: string;
-  email?: string;
-  gender?: string;
-  password?: string;
-  passwordRepeat?: string;
-  files?: string;
-  accept?: string;
-  country?: string;
-}
+import { Errors, FormFields } from '../../../types/Iform';
+import InputWrap from '../../FormElements/InputWrap/InputWrap';
+import Password from '../../FormElements/Password/Password';
+import PasswordStrength from '../../PasswordStrength/PasswordStrength';
+import getPasswordStrength from '../../../utils/getPasswordStrength';
 
 export default function UncontroledForm() {
   const { countries } = useAppSelector((state) => state.formReducer);
   const [errors, setErrors] = useState<Errors>({});
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [visiblePasswordStrength, setVisiblePasswordStrength] = useState(false);
+  const [valuePasswordStrength, setValuePasswordStrength] = useState(0);
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement & FormFields> = async (event) => {
     event.preventDefault();
@@ -51,6 +35,10 @@ export default function UncontroledForm() {
       accept: accept.checked,
       country: country.value,
     };
+
+    setVisiblePasswordStrength(true);
+    setValuePasswordStrength(() => getPasswordStrength(values.password || ''));
+
     try {
       schema.validateSync(values, { abortEarly: false });
       if (!values || !values.files || !values.files[0]) throw Error('File is not founs');
@@ -67,6 +55,7 @@ export default function UncontroledForm() {
           accept: values.accept,
         })
       );
+      setVisiblePasswordStrength(false);
       navigate('/', { state: { key: 'uncontroled-form' } });
     } catch (err) {
       const errs = err as yup.ValidationError;
@@ -81,7 +70,6 @@ export default function UncontroledForm() {
           }
           return acc;
         }, {});
-        console.log(result);
         setErrors(() => result);
       }
     }
@@ -92,53 +80,50 @@ export default function UncontroledForm() {
       <Header></Header>
       <div className="form-box">
         <form onSubmit={handleSubmit} className="contact_edit">
-          <div className="item">
-            <label htmlFor="name" className="item__name">
-              Name:
-            </label>
-            <div className="item__value">
-              <input type="text" id="name" name="name" />
-              <div className="error_messege">{errors.name ? errors.name : ''}</div>
-            </div>
-          </div>
-          <div className="item">
-            <label htmlFor="age" className="item__name">
-              Age
-            </label>
-            <div className="item__value">
-              <input type="text" id="age" name="age" />
-              <div className="error_messege">{errors.age ? errors.age : ''}</div>
-            </div>
-          </div>
-          <div className="item">
-            <label htmlFor="email" className="item__name">
-              Email:
-            </label>
-            <div className="item__value">
-              <input type="email" id="email" name="email" />
-              <div className="error_messege">{errors.email ? errors.email : ''}</div>
-            </div>
-          </div>
-          <div className="item">
-            <label htmlFor="password" className="item__name">
-              Password:
-            </label>
-            <div className="item__value">
-              <input type="password" id="password" name="password" />
-              <div className="error_messege">{errors.password ? errors.password : ''}</div>
-            </div>
-          </div>
-          <div className="item">
-            <label htmlFor="password_r" className="item__name">
-              Repeate password:
-            </label>
-            <div className="item__value">
-              <input type="password" id="password_r" name="passwordRepeat" />
-              <div className="error_messege">
-                {errors.passwordRepeat ? errors.passwordRepeat : ''}
-              </div>
-            </div>
-          </div>
+          <InputWrap
+            label={'Name:'}
+            type={'text'}
+            id={'name'}
+            placeholder={'Name'}
+            error={errors.name ? errors.name : ''}
+            name="name"
+          />
+          <InputWrap
+            label={'Age:'}
+            type={'number'}
+            id={'age'}
+            placeholder={'Age'}
+            error={errors.age ? errors.age : ''}
+            name={'age'}
+          />
+
+          <InputWrap
+            label={'Email:'}
+            type={'email'}
+            id={'email'}
+            placeholder={'Email'}
+            error={errors.email ? errors.email : ''}
+            name="email"
+          />
+
+          <Password
+            name="password"
+            label={'Password'}
+            id={'password'}
+            placeholder={'Password'}
+            error={errors.password ? errors.password : ''}
+          >
+            <PasswordStrength strength={valuePasswordStrength} visible={visiblePasswordStrength} />
+          </Password>
+
+          <Password
+            name="passwordRepeat"
+            label={'Repeate password'}
+            id={'password_r'}
+            placeholder={'Repeate password'}
+            error={errors.passwordRepeat ? errors.passwordRepeat : ''}
+          />
+
           <div className="item">
             <span className="item__name">Gender:</span>
             <div className="item__value" id="gender">
@@ -184,6 +169,7 @@ export default function UncontroledForm() {
               <div className="error_messege">{errors.country ? errors.country : ''}</div>
             </div>
           </div>
+
           <div className="item__value">
             <label>
               <input type="checkbox" name="accept" />
