@@ -1,68 +1,110 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  --bg-color: linear-gradient(
+    45deg,
+    rgb(178, 93, 199) 13%,
+    rgb(86, 214, 214) 59%,
+    rgb(0, 227, 107)
+  );
+  --main-text-color: #000000;
+  --disabled-color: #575757;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  --light-color: #fff;
+  --dark-color: #1b1a1a;
+  --gold-color: #d4af37;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --a-hover-default-color: #f8e265;
+
+  --maint-font-family: 'Montserrat', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --main-font-size: 20px;
+
+  --max-content-width: 1280px;
+  --max-content-padding: 0px 15px;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,400;0,700;1,400&display=swap');
+
+@import './form.scss';
+
+a,
+a:visited,
 a:hover {
-  color: #535bf2;
+  text-decoration: inherit;
+  color: inherit;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+a:hover {
+  color: var(--a-hover-default-color);
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+input,
+button,
+textarea {
+  font-family: inherit;
 }
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+input[type='text'],
+input[type='email'],
+input[type='password'] {
+  padding: 10px;
+  border: 1px solid gray;
+  border-radius: 5px;
+  width: 66%;
+  font-size: 16px;
+  outline: none;
+}
+
+datalist {
+  max-height: 50px;
+  height: 50px;
+}
+
+ul,
+li {
+  list-style: none;
+}
+
+img {
+  vertical-align: top;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+html,
+body {
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  background: var(--bg-color);
+  color: var(--main-text-color);
+  font-family: var(--maint-font-family);
+  font-size: var(--main-font-size);
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.conteiner {
+  max-width: var(--max-content-width);
+  padding: var(--max-content-padding);
+  margin: 0px auto;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0px 5px;
+}
+
+h1 {
+  text-align: center;
+  text-transform: uppercase;
 }

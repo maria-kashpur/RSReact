@@ -1,0 +1,40 @@
+.form-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px auto;
+  max-width: 500px;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.contact_edit {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+}
+
+.item {
+  display: flex;
+}
+
+.item__name {
+  width: 10em;
+}
+
+.item__value {
+  flex: 0 1 100%;
+}
+
+.error_messege {
+  color: red;
+  font-size: 0.4em;
+  height: 0.6em;
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.item__submit {
+  margin: 0 auto;
+}
