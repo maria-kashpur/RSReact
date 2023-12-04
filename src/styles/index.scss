@@ -1,0 +1,99 @@
+:root {
+  --bg-color: linear-gradient(
+    45deg,
+    rgb(178, 93, 199) 13%,
+    rgb(86, 214, 214) 59%,
+    rgb(0, 227, 107)
+  );
+  --main-text-color: #000000;
+  --disabled-color: #575757;
+
+  --light-color: #fff;
+  --dark-color: #1b1a1a;
+  --gold-color: #d4af37;
+
+  --a-hover-default-color: #f8e265;
+
+  --maint-font-family: 'Montserrat', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --main-font-size: 20px;
+
+  --max-content-width: 1280px;
+  --max-content-padding: 0px 15px;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,400;0,700;1,400&display=swap');
+
+@import './form.scss';
+
+a,
+a:visited,
+a:hover {
+  text-decoration: inherit;
+  color: inherit;
+}
+
+a:hover {
+  color: var(--a-hover-default-color);
+}
+
+input,
+button,
+textarea {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+datalist {
+  max-height: 50px;
+  height: 50px;
+}
+
+ul,
+li {
+  list-style: none;
+}
+
+img {
+  vertical-align: top;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+html,
+body {
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  background: var(--bg-color);
+  color: var(--main-text-color);
+  font-family: var(--maint-font-family);
+  font-size: var(--main-font-size);
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.conteiner {
+  max-width: var(--max-content-width);
+  padding: var(--max-content-padding);
+  margin: 0px auto;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0px 5px;
+}
+
+h1 {
+  text-align: center;
+  text-transform: uppercase;
+}
